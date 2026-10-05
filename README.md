@@ -29,3 +29,7 @@ assets/style.css · assets/site.js (복사 버튼)
 ## 제작 과정의 AI 사용
 
 이 사이트는 지도교수가 AI 코딩 에이전트 (Claude Code) 와 함께 작성하고 검토했습니다.
+
+## 라이선스
+
+- 문서 (Markdown · HTML 의 본문) 는 [CC BY 4.0](LICENSE-docs), 코드 (Python · CSS · JavaScript · 설정 파일) 는 [MIT](LICENSE) 입니다. Copyright (c) 2026 Yongsoo Joo
