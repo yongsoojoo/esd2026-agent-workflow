@@ -11,9 +11,11 @@
 빌드 단계가 없는 정적 HTML 입니다. 파일을 고치고 push 하면 GitHub Pages 가 그대로 배포합니다.
 
 ```
-index.html     1. 개요            session.html   4. 세션 운영       case.html   7. 사례 따라 읽기
-setup.html     2. 시작하기        lab.html       5. 실습 환경 · 측정
-rules.html     3. 규칙 파일       topics.html    6. 주제별 가이드   submit.html 8. 회고 · 제출
+start.html     0. 빠른 시작 (경험별 3 트랙 + 첫 연습 세션)
+index.html     1. 개요            session.html   4. 세션 운영         case.html    7. 사례 따라 읽기
+setup.html     2. 시작하기        lab.html       5. 실습 환경 · 측정  submit.html  8. 회고 · 제출
+rules.html     3. 규칙 파일       topics.html    6. 주제별 가이드     terms.html   용어
+git.html       기초 A. git · GitHub    ai-tools.html  기초 B. AI 도구의 형태    pi-setup.html  기초 C. Raspberry Pi 초기 설정
 assets/style.css · assets/site.js (복사 버튼)
 ```
 
