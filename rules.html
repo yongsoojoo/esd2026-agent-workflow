@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>규칙 파일 · 에이전트 형상관리</title>
+<meta name="description" content="AGENTS.md 의 각 절이 왜 있는지, 규칙을 사고에서 키우고 관리하는 방법">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hahmlet:wght@500;600;700&family=IBM+Plex+Sans+KR:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/site.js" defer></script>
+</head>
+<body>
+<header class="topbar"><div class="topbar-inner">
+  <a class="brand" href="index.html"><b>ESD 2026-2</b> · 에이전트 형상관리</a>
+  <nav class="nav" aria-label="튜토리얼 페이지"><ol>
+    <li><a href="start.html"><span class="n">0</span>빠른 시작</a></li>
+    <li><a href="index.html"><span class="n">1</span>개요</a></li>
+    <li><a href="setup.html"><span class="n">2</span>시작하기</a></li>
+    <li><a href="rules.html" aria-current="page"><span class="n">3</span>규칙 파일</a></li>
+    <li><a href="session.html"><span class="n">4</span>세션 운영</a></li>
+    <li><a href="lab.html"><span class="n">5</span>실습 환경 · 측정</a></li>
+    <li><a href="topics.html"><span class="n">6</span>주제별 가이드</a></li>
+    <li><a href="case.html"><span class="n">7</span>사례 따라 읽기</a></li>
+    <li><a href="submit.html"><span class="n">8</span>회고 · 제출</a></li>
+    <li><a href="terms.html"><span class="n">∗</span>용어</a></li>
+  </ol></nav>
+</div></header>
+
+<main class="page"><div class="col">
+
+<header class="lead">
+  <p class="eyebrow">3 · 규칙 파일</p>
+  <h1>AGENTS.md — 내 작업 방식을 에이전트가 매번 읽게 하기</h1>
+  <p class="lede">규칙 파일은 에이전트가 세션마다 자동으로 읽는 유일한 문서입니다. 그래서 짧아야 하고, 바뀌지 않는 원칙만 담아야 하며,
+  모든 조항이 「왜」 를 가져야 합니다. 이 페이지는 starter 의 <code>AGENTS.md</code> 를 절 단위로 읽고, 규칙을 키우는 방법을 설명합니다.</p>
+</header>
+
+<h2 id="layout"><span class="sec">§1</span>절 구성</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>절</th><th>내용</th><th>왜 이 자리에</th></tr></thead>
+  <tbody>
+    <tr><td>머리말</td><td>이 파일이 단일 원본이라는 것, 유래, 개정 방법</td><td>에이전트가 다른 파일의 규칙을 같은 무게로 섞지 않게 합니다</td></tr>
+    <tr><td>§0 개요</td><td>목표 · 장치 · 제어 주기 · 핵심 지표 · 일정 · <strong>결정자</strong></td><td>에이전트가 판단할 때의 근거입니다. 결정자는 학생 본인이고, 에이전트는 결정자가 아닙니다</td></tr>
+    <tr><td>§1 세션</td><td>시작 순서, 시각 실측, 종료 절차</td><td>세션 경계에서 정보가 가장 많이 사라집니다</td></tr>
+    <tr><td>§2 작업 순환</td><td>계획 먼저, 결과 먼저, 문서는 승인 후</td><td>에이전트가 스스로 범위를 넓히는 것을 막습니다</td></tr>
+    <tr><td>§3 하드웨어 안전</td><td>구동 명령은 사람 입회, 한계 이중화, sudo 최소화</td><td>소프트웨어 실수가 물리적 손상이 되는 유일한 영역입니다</td></tr>
+    <tr><td>§4 측정</td><td>baseline, 탐색→확증, 같은 입력, 실제 적용값, 로그 무결성, 시뮬레이터 복제</td><td>틀린 비교는 틀린 결론을 그럴듯하게 만듭니다</td></tr>
+    <tr><td>§5 디버깅 · 시험</td><td>첫 이상에서 멈춤, 시험의 전제, 변환 한 곳, 필드 단위 비교, 「없다」 의 판정, 정정 검증</td><td>증상을 덮는 수정과 공허한 PASS 를 막습니다</td></tr>
+    <tr><td>§6 기록</td><td>회의록 (프롬프트 기록 포함), handoff, AI 사용 기록, 실험 기록, 문체</td><td>세션 밖에 남는 기억의 형식입니다</td></tr>
+    <tr><td>§7 Git</td><td>pull/push 시점, 커밋 메시지, 이력 재작성 금지</td><td>노트북과 Pi 사이의 충돌과 기록 손실을 막습니다</td></tr>
+    <tr><td>§8 주제</td><td><code>topics/</code> 에서 고른 주제별 규칙</td><td>좌표 · 단위 · 지표 · 안전이 주제마다 다릅니다</td></tr>
+    <tr><td>§9 개정 이력</td><td>r번호 · 날짜 · 계기 · 내용 · 회의록</td><td>규칙마다 「왜 생겼나」 를 거슬러 갈 수 있게 합니다</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="core"><span class="sec">§2</span>핵심 조항과 그 이유</h2>
+<p>모든 조항을 옮기지는 않았습니다. 아래는 학생 프로젝트에서 특히 자주 어겨지는 조항입니다. 조항마다 붙은 칩은 <a href="case.html">사례 저장소</a>에서 그 규칙이 생긴 날입니다.</p>
+
+<div class="rule"><span class="ref">§1-1</span><div>
+  <h3>시작할 때 git 이력을 handoff 와 따로 확인합니다</h3>
+  <p>handoff 는 그것을 쓴 세션이 아는 것만 담습니다. 전날 저녁 Pi 에서 한 커밋을 노트북에서 쓴 handoff 가 빠뜨리면, 다음 세션의 에이전트는 그 변경을 모른 채 일합니다.</p>
+  <p><a class="chip incident" href="case.html#day17">사례 Day 17</a></p>
+</div></div>
+<div class="rule"><span class="ref">§1-2</span><div>
+  <h3>시각은 매번 <code>date</code> 로 읽습니다</h3>
+  <p>에이전트는 현재 시각을 모릅니다. 그럴듯한 시각을 지어내 기록하고, 그 시각으로 남은 시간을 계산해 일정 판단을 그르칩니다.</p>
+  <p><a class="chip incident" href="case.html#day22">사례 Day 22</a></p>
+</div></div>
+<div class="rule"><span class="ref">§2-2</span><div>
+  <h3>진단은 원인에서 멈춥니다</h3>
+  <p>원인을 찾은 뒤의 추가 측정은 새 계획입니다. 곧 바뀔 구성에서 잰 값은 쓸모가 없고, 승인 없이 잰 결과는 다른 설명 속에 묻히기 쉽습니다.</p>
+  <p><a class="chip incident" href="case.html#day04">사례 Day 4</a></p>
+</div></div>
+<div class="rule"><span class="ref">§2-6</span><div>
+  <h3>결정에는 결정자와 시각을 붙입니다</h3>
+  <p>에이전트가 스스로 정한 것 (「보고서는 동결되었다」) 이 결정처럼 기록되면 다음 세션은 그것을 사실로 받아들입니다. 결정자가 없는 결정은 가정입니다.</p>
+  <p><a class="chip incident" href="case.html#day22">사례 Day 22</a></p>
+</div></div>
+<div class="rule"><span class="ref">§3-1</span><div>
+  <h3>구동 명령은 사람 입회 하에</h3>
+  <p>에이전트는 명령과 「정상이면 보일 동작 · 중단 기준」 까지만 냅니다. 실행은 장치 옆의 학생이 합니다. 에이전트는 공이 날아가는 것을 보지 못합니다.</p>
+  <p><span class="chip directive">과목 규칙</span></p>
+</div></div>
+<div class="rule"><span class="ref">§3-4</span><div>
+  <h3>sudo 로 실행하지 않습니다</h3>
+  <p><code>sudo</code> 는 <code>HOME</code> 과 환경을 바꿉니다. 내 설정 대신 기본값을 읽은 제어기가 아무 일도 하지 않는데 시험은 통과할 수 있습니다.</p>
+  <p><a class="chip incident" href="case.html#day02">사례 Day 2</a></p>
+</div></div>
+<div class="rule"><span class="ref">§4-3</span><div>
+  <h3>같은 시간이 아니라 같은 입력으로 비교합니다</h3>
+  <p>「각각 60 초 돌렸다」 는 같은 조건이 아닙니다. 한쪽이 중간에 공을 떨어뜨려 리셋되면 외란을 받은 횟수가 달라집니다. 같은 seed 의 외란을 같은 횟수만큼 주고 비교합니다.</p>
+  <p><a class="chip incident" href="case.html#day09">사례 Day 9</a></p>
+</div></div>
+<div class="rule"><span class="ref">§4-4</span><div>
+  <h3>공통 조건은 변수 하나로, 실제 값은 로그로</h3>
+  <p>비교하는 두 코드가 센서 설정을 각자 정하면 언젠가 한쪽만 바뀌고, 그 차이가 결론을 만듭니다. 그리고 「설정했다」 가 아니라 「적용되었다」 를 로그로 확인합니다.</p>
+  <p><a class="chip incident" href="case.html#day08">사례 Day 8</a></p>
+</div></div>
+<div class="rule"><span class="ref">§4-5</span><div>
+  <h3>분석 전에 로그 무결성을 확인합니다</h3>
+  <p>SD 카드 쓰기가 밀리면 샘플이 조용히 빠집니다. 빠진 구간을 건너뛴 정착시간은 실제보다 짧게 나옵니다. <code>tools/check_log.py</code> 로 샘플 수와 간격을 먼저 봅니다.</p>
+  <p><a class="chip incident" href="case.html#day10">사례 Day 10</a></p>
+</div></div>
+<div class="rule"><span class="ref">§4-6</span><div>
+  <h3>시뮬레이터의 「n = 3」 은 복제가 아닙니다</h3>
+  <p>같은 설정을 세 번 돌리면 sd = 0 이 나옵니다. 그것은 확증이 아니라 동어반복입니다. 잡음 seed · 초기 위치 · 외란 시점을 바꾸고, 큰 교란을 준 대조 실행으로 그 방법이 차이를 감지하는지도 보입니다.</p>
+  <p><a class="chip incident" href="case.html#day07">사례 Day 7</a></p>
+</div></div>
+<div class="rule"><span class="ref">§5-4</span><div>
+  <h3>PASS 는 피시험 코드가 돌았을 때만 의미가 있습니다</h3>
+  <p>공이 처음부터 가운데 정지해 있으면, 제어기가 꺼져 있어도 「±5 mm 유지」 는 통과합니다. 루프 tick, 구동 명령 변화, 외란 주입 후 FAIL 여부를 시험의 전제로 검사합니다.</p>
+  <p><a class="chip incident" href="case.html#day02">사례 Day 2</a></p>
+</div></div>
+<div class="rule"><span class="ref">§5-5</span><div>
+  <h3>raw → 물리량 변환은 한 곳에</h3>
+  <p>주 루프는 보정표를 쓰는데 안전 검사만 따로 만든 근사식을 쓰면, 빔 끝에서 두 값이 어긋나 한계 검사가 통과해 버립니다. 변환 경로를 모두 찾아 하나로 모으고, 전 범위를 스윕해 확인합니다.</p>
+  <p><a class="chip incident" href="case.html#day03">사례 Day 3</a></p>
+</div></div>
+<div class="rule"><span class="ref">§5-6</span><div>
+  <h3>설정 비교는 필드 단위로</h3>
+  <p>새 필드 하나가 추가되면 해시 비교는 전부 「다름」 이 됩니다. 필드 단위로 보면 무엇이 같고 무엇이 다른지 보입니다. 차이를 지우려고 참조 데이터를 다시 만들지 않습니다 — 참조는 보고서 수치의 출처입니다.</p>
+  <p><a class="chip incident" href="case.html#day12">사례 Day 12</a></p>
+</div></div>
+<div class="rule"><span class="ref">§5-7</span><div>
+  <h3>「없다」 고 쓰기 전에 원본과 양성 대조</h3>
+  <p>PDF 에서 추출한 텍스트에 없다는 것은 원본에 없다는 뜻이 아닙니다 (표가 이미지일 수 있습니다). 그 자료에 있다고 이미 아는 값이 추출본에서 검색되는지 먼저 봅니다.</p>
+  <p><a class="chip incident" href="case.html#day17">사례 Day 17</a></p>
+</div></div>
+<div class="rule"><span class="ref">§5-8</span><div>
+  <h3>정정도 다른 경로로 검증합니다</h3>
+  <p>고치는 과정에서 새 오류가 생깁니다. 표만 고치고 요약의 수치는 그대로 두거나, 옳은 문장을 틀렸다고 「정정」 합니다. 혼자 하는 프로젝트에서도 고친 세션과 <strong>다른 경로</strong> — 새 세션, 다른 도구, 렌더 결과 비교, 지도교수나 조교의 피드백 — 로 다시 봅니다.</p>
+  <p><a class="chip incident" href="case.html#day22">사례 Day 22</a></p>
+</div></div>
+<div class="rule"><span class="ref">§6-1</span><div>
+  <h3>회의록에 내 프롬프트를 전부 원문으로 남깁니다</h3>
+  <p>세션 종료 때 에이전트가 회의록을 쓰면서 그 세션의 프롬프트를 시각과 함께 전부 옮깁니다. 「진행」 한 마디도 빼지 않습니다. 이 기록이 있어야 나중에 「내가 논의를 어떻게 끌어갔나」 를 분석할 수 있습니다.</p>
+  <p><span class="chip directive">과목 규칙</span></p>
+</div></div>
+
+<h2 id="grow"><span class="sec">§3</span>규칙을 키우는 법</h2>
+<p>규칙 파일은 착수 때 완성되지 않습니다. 템플릿 (r0) 에서 시작해 프로젝트를 하며 자랍니다. 순서는 이렇습니다.</p>
+<ol>
+  <li><strong>사고를 기록합니다.</strong> 회의록에 「⚠ 사고 —」 항목으로 첫 이상 1 건의 경과를 적습니다.</li>
+  <li><strong>규칙 후보를 적습니다.</strong> 같은 회의록의 「규칙 개정 후보」 에 한 줄로 적습니다. 아직 규칙 파일을 고치지 않습니다.</li>
+  <li><strong>학생이 결정합니다.</strong> 승격 여부는 학생 본인이 정합니다. 후보는 일주일에 한 번 승격하거나 버립니다 — 쌓아 두면 아무도 읽지 않습니다.</li>
+  <li><strong>단독 커밋으로 고칩니다.</strong> <code>rules: ...</code> 커밋 하나에 규칙 변경만 담고, §9 개정 이력에 계기와 회의록 경로를 적습니다.</li>
+  <li><strong>적재를 확인합니다.</strong> 새 세션에서 바뀐 조항을 묻습니다 (<a href="setup.html#verify">양성 대조</a>).</li>
+</ol>
+<div class="table-wrap"><table>
+  <thead><tr><th>계기</th><th>예</th><th>규칙 파일에 넣나</th></tr></thead>
+  <tbody>
+    <tr><td><span class="chip incident">사고</span></td><td>로그 샘플 누락으로 정착시간 오판</td><td>넣습니다. 조항 끝에 사례 (회의록) 를 답니다</td></tr>
+    <tr><td><span class="chip directive">지시</span></td><td>지도교수 면담: 「손으로 미는 외란은 비교에 쓰지 않는다」</td><td>넣습니다. 결정자와 날짜를 §9 에 적습니다</td></tr>
+    <tr><td><span class="chip">기록 갱신</span></td><td>현재 정착시간 1.2 s → 0.9 s</td><td><strong>넣지 않습니다.</strong> 수치는 실험 기록에 둡니다. 규칙 파일에 수치가 있으면 바뀔 때마다 규칙 개정이 생깁니다</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="limits">규칙만으로는 재발이 멈추지 않습니다</h3>
+<p>규칙이 있어도 같은 위반은 다시 일어납니다. 반복되는 위반은 규칙 문장을 늘리는 대신 <strong>검사 도구</strong>로 바꿉니다 —
+로그 무결성은 <code>check_log.py</code>, 시험의 전제는 smoke 스크립트의 <code>exit 1</code>, 세션 종료 절차는 <code>/session-close</code> 명령과 hook 처럼.</p>
+
+<h2 id="write"><span class="sec">§4</span>조항 하나를 쓰는 형식</h2>
+<pre data-file="AGENTS.md 에 조항을 추가할 때"><code>N. **&lt;규칙 이름 — 행동으로&gt;**: &lt;무엇을 합니다 / 하지 않습니다, 한두 문장&gt;.
+   &lt;왜 — 어긴 경우에 무슨 일이 생기나&gt; *(사례: YYYY-MM-DD 회의록 경로)*</code></pre>
+<ul>
+  <li><strong>행동으로 씁니다.</strong> 「주의합니다」 가 아니라 「<code>check_log.py</code> 를 통과한 로그만 분석합니다」.</li>
+  <li><strong>측정하지 않은 주장을 넣지 않습니다.</strong> 「잡음은 항상 정착을 늦춘다」 같은 문장은 규칙의 근거가 될 수 없습니다. 실제로 재 보면 방향이 갈리기도 합니다 (<a href="case.html#day07">사례 Day 7</a>).</li>
+  <li><strong>이식한 규칙에는 적용 범위를 적습니다.</strong> 지난 학기의 규칙이 이번 장치에도 맞는지는 따로 확인합니다.</li>
+</ul>
+
+<h2 id="size"><span class="sec">§5</span>크기 관리</h2>
+<ul>
+  <li><strong>150 행 안팎을 넘기지 않습니다.</strong> 도구마다 읽는 분량에 한도가 있고 (예: Codex 32 KiB, Claude Code 권장 200 행), 길어질수록 에이전트가 덜 지킵니다.</li>
+  <li><strong>절차서는 따로 둡니다.</strong> 보고서 작성법은 <code>docs/writing-guide.md</code>, 주제별 상세는 <code>docs/</code> 에 두고 필요한 세션에서 읽힙니다.</li>
+  <li><strong>handoff 가 두 번째 규칙 파일이 되지 않게 합니다.</strong> handoff 의 「환경 유의」 에 같은 당부가 세 번 나오면 규칙 후보로 올립니다.</li>
+</ul>
+
+<div class="pager">
+  <a href="setup.html"><span>이전</span><b>← 2. 시작하기</b></a>
+  <a class="next" href="session.html"><span>다음</span><b>4. 세션 운영 →</b></a>
+</div>
+
+<footer class="site"><p>조항 번호는 <a href="https://github.com/yongsoojoo/esd2026-starter/blob/main/AGENTS.md">starter 의 AGENTS.md</a> (v1.1) 기준입니다.</p></footer>
+
+</div></main>
+</body>
+</html>

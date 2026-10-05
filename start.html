@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>빠른 시작 · 에이전트 형상관리</title>
+<meta name="description" content="git · 에이전트 경험에 따라 세 갈래로 나눈 빠른 시작 경로와 첫 연습 세션">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hahmlet:wght@500;600;700&family=IBM+Plex+Sans+KR:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/site.js" defer></script>
+</head>
+<body>
+<header class="topbar"><div class="topbar-inner">
+  <a class="brand" href="index.html"><b>ESD 2026-2</b> · 에이전트 형상관리</a>
+  <nav class="nav" aria-label="튜토리얼 페이지"><ol>
+    <li><a href="start.html" aria-current="page"><span class="n">0</span>빠른 시작</a></li>
+    <li><a href="index.html"><span class="n">1</span>개요</a></li>
+    <li><a href="setup.html"><span class="n">2</span>시작하기</a></li>
+    <li><a href="rules.html"><span class="n">3</span>규칙 파일</a></li>
+    <li><a href="session.html"><span class="n">4</span>세션 운영</a></li>
+    <li><a href="lab.html"><span class="n">5</span>실습 환경 · 측정</a></li>
+    <li><a href="topics.html"><span class="n">6</span>주제별 가이드</a></li>
+    <li><a href="case.html"><span class="n">7</span>사례 따라 읽기</a></li>
+    <li><a href="submit.html"><span class="n">8</span>회고 · 제출</a></li>
+    <li><a href="terms.html"><span class="n">∗</span>용어</a></li>
+  </ol></nav>
+</div></header>
+
+<main class="page"><div class="col">
+
+<header class="lead">
+  <p class="eyebrow">0 · 빠른 시작</p>
+  <h1>내 출발점에서 시작하기</h1>
+  <p class="lede">git 을 한 번도 써 보지 않은 학생부터 Claude Code 를 이미 쓰는 학생까지, 출발점에 따라 필요한 것이 다릅니다.
+  아래 세 질문에 답하고 자기 트랙을 따라갑니다. 어느 트랙이든 마지막은 같은 <a href="#practice">첫 연습 세션</a>입니다.</p>
+</header>
+
+<h2 id="diagnose"><span class="sec">§1</span>세 가지 질문</h2>
+<ol>
+  <li>git 으로 commit 과 push 를 해 본 적이 있습니까?</li>
+  <li>터미널에서 명령을 입력하고 결과를 읽을 수 있습니까?</li>
+  <li>AI 코딩 에이전트 (Kiro · Claude Code · Copilot agent mode · Cursor 등) 에게 파일을 고치게 해 본 적이 있습니까?</li>
+</ol>
+<div class="table-wrap"><table>
+  <thead><tr><th>답</th><th>트랙</th><th>걸리는 시간 (대략)</th></tr></thead>
+  <tbody>
+    <tr><td>1 또는 2 가 「아니오」</td><td><a href="#track1"><strong>트랙 1</strong> — 모두 처음</a></td><td>약 3 시간 (수업 시간과 과제로 나눠서)</td></tr>
+    <tr><td>1 · 2 는 「예」, 3 은 「아니오」</td><td><a href="#track2"><strong>트랙 2</strong> — git 은 알고 에이전트는 처음</a></td><td>약 1 시간</td></tr>
+    <tr><td>셋 다 「예」</td><td><a href="#track3"><strong>트랙 3</strong> — 이미 에이전트를 쓰고 있음</a></td><td>약 15 분</td></tr>
+  </tbody>
+</table></div>
+<p>낯선 낱말이 나오면 <a href="terms.html">용어</a> 페이지를 봅니다. 「형상관리」 라는 말부터 번역어라 뜻이 잘 와닿지 않습니다.</p>
+
+<h2 id="track1"><span class="sec">§2</span>트랙 1 — 모두 처음</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th class="num">#</th><th>할 일</th><th>읽을 곳</th><th>끝났다는 표시</th></tr></thead>
+  <tbody>
+    <tr><td class="num">1</td><td>git 의 낱말과 흐름 익히기</td><td><a href="git.html#concepts">기초 A §1–§2</a></td><td>commit 과 push 의 차이를 말할 수 있음</td></tr>
+    <tr><td class="num">2</td><td>Git · Kiro IDE 설치, GitHub 계정, noreply 이메일, <code>git config</code></td><td><a href="git.html#install">기초 A §3</a></td><td><code>git --version</code> 이 나옴</td></tr>
+    <tr><td class="num">3</td><td>템플릿으로 내 저장소 만들기 → Kiro 에서 clone</td><td><a href="git.html#first">기초 A §4</a></td><td>노트북에 저장소 폴더가 있음</td></tr>
+    <tr><td class="num">4</td><td>첫 커밋 · push</td><td><a href="git.html#first">기초 A §4</a></td><td>GitHub 웹에서 내 커밋이 보임</td></tr>
+    <tr><td class="num">5</td><td>AI 도구의 세 가지 형태 이해</td><td><a href="ai-tools.html">기초 B</a></td><td>내가 쓸 형태를 정함 (처음이면 Kiro IDE)</td></tr>
+    <tr><td class="num">6</td><td>Kiro 학생 등록 · Trust · 규칙 적재 확인</td><td><a href="setup.html#kiro">2. 시작하기 §2 · §5</a></td><td>확인 질문에 에이전트가 파일을 열지 않고 답함</td></tr>
+    <tr><td class="num">7</td><td>Raspberry Pi 초기 설정 (수업 시간)</td><td><a href="pi-setup.html">기초 C</a></td><td><code>gpio readall</code> 핀 표가 나옴</td></tr>
+    <tr><td class="num">8</td><td>회의록 뷰어 (선택)</td><td><a href="setup.html#viewer">2. 시작하기 §6</a></td><td>Obsidian 으로 저장소 폴더를 엶</td></tr>
+    <tr><td class="num">9</td><td><strong>첫 연습 세션</strong></td><td><a href="#practice">아래 §5</a></td><td>내 프롬프트가 담긴 첫 회의록이 커밋됨</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="track2"><span class="sec">§3</span>트랙 2 — git 은 알고 에이전트는 처음</h2>
+<ol>
+  <li><a href="ai-tools.html">기초 B</a> 로 웹 채팅 · IDE 에이전트 · CLI 에이전트의 차이를 봅니다.</li>
+  <li>템플릿으로 저장소를 만들고 clone 합니다 (<a href="setup.html#repo">2. 시작하기 §1</a>). 커밋 이메일은 noreply 로 맞춥니다 (<a href="git.html#install">기초 A §3</a>).</li>
+  <li>Kiro 학생 등록 · Trust · 규칙 적재 확인을 합니다 (<a href="setup.html#kiro">§2 · §5</a>).</li>
+  <li><a href="index.html#prompts">1. 개요 §2</a> 에서 프롬프트를 왜 전부 남기는지 읽습니다.</li>
+  <li>Pi 가 처음이면 <a href="pi-setup.html">기초 C</a> 를 합니다.</li>
+  <li><a href="#practice">첫 연습 세션</a>을 합니다.</li>
+</ol>
+
+<h2 id="track3"><span class="sec">§4</span>트랙 3 — 이미 에이전트를 쓰고 있다면</h2>
+<p>쓰던 도구를 그대로 써도 됩니다. 이 과목에서 <strong>달라지는 것</strong>만 확인합니다.</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>이 과목에서는</th><th>확인할 것</th></tr></thead>
+  <tbody>
+    <tr><td>규칙 원본은 <code>AGENTS.md</code> 하나</td><td><code>CLAUDE.md</code> 등 도구별 파일에는 <code>@AGENTS.md</code> 같은 참조만 둡니다. 쓰던 규칙이 있으면 <code>AGENTS.md</code> 로 옮깁니다</td></tr>
+    <tr><td>개인 전역 설정과 충돌하지 않게</td><td><code>~/.claude/CLAUDE.md</code> · <code>~/.codex/AGENTS.md</code> · <code>~/.gemini/GEMINI.md</code> · <code>~/.kiro/steering/</code> 에 자동 커밋 · 자동 승인 · 특정 trailer 같은 지시가 있으면 이 저장소에서는 과목 규칙이 우선하도록 정리합니다</td></tr>
+    <tr><td><strong>프롬프트 전부를 회의록에 원문으로</strong></td><td>세션은 <code>/session-close</code> (Kiro · Claude Code) 로 닫고, 회의록의 「프롬프트 기록」 행 수가 내가 입력한 수와 맞는지 봅니다 (<a href="session.html#close">4. 세션 운영 §4</a>)</td></tr>
+    <tr><td>구동 명령은 에이전트가 실행하지 않음</td><td>구동 코드를 다루는 동안 자동 승인 모드 (Kiro Autopilot, Claude Code 의 자동 수락 · 권한 생략, Codex 의 전체 자동) 를 끕니다 (<a href="lab.html#safety">5. 실습 환경 §2</a>)</td></tr>
+    <tr><td><code>docs/ai-usage.md</code> 필수</td><td>세션마다 한 줄, 「검토한 범위」 는 직접 씁니다</td></tr>
+    <tr><td>계획 → 승인 → 실행 → 결과 보고 → 승인 → 문서화</td><td>평소보다 승인 관문이 많게 느껴질 수 있습니다. 이 관문에서 쓴 프롬프트가 사후 분석의 대상입니다 (<a href="index.html#prompts">1. 개요 §2</a>)</td></tr>
+    <tr><td>여러 작업을 한꺼번에 맡길 때 (subagent · 병렬)</td><td>무엇을 어느 작업에 맡겼는지 회의록에 적습니다. 그 작업에 준 지시문도 프롬프트 기록에 넣습니다</td></tr>
+  </tbody>
+</table></div>
+<p>이어서 <a href="#practice">첫 연습 세션</a>으로 과목 규칙이 내 도구에서 그대로 작동하는지 확인합니다.</p>
+
+<h2 id="practice"><span class="sec">§5</span>첫 연습 세션 — 하드웨어 없이 한 바퀴</h2>
+<p>장치가 없어도 할 수 있는 작은 과제로 작업 순환 전체를 한 번 돕니다. 과제는 「starter 의 <code>tools/check_log.py</code> 가 정말로 문제를 잡는지 시험하기」 입니다 — 그 자체가 <a href="terms.html#list">양성 대조</a> 연습입니다.</p>
+<ol>
+  <li><strong>세션을 엽니다.</strong>
+    <div class="prompt"><p>handoff.md 와 git log 를 읽고, 다음 작업을 계획으로 보고해 줘. 승인 전에는 착수하지 마. 오늘은 handoff 대신 이 작업을 할 거야: tools/check_log.py 를 시험할 50 Hz 가짜 로그 두 개 (정상 1 개, 중간 샘플 일부가 빠진 1 개) 를 만드는 스크립트를 tests/ 에 만들고, 두 로그를 check_log.py 로 검사해서 결과를 보고해 줘.</p></div></li>
+  <li><strong>계획을 읽고 조건을 붙여 승인합니다.</strong> 예: 「계획 승인. 로그 파일은 logs/practice/ 에 두고, 결과는 표로만 보고해 줘.」</li>
+  <li><strong>결과 보고를 받습니다.</strong> 정상 로그는 PASS, 결손 로그는 VOID 여야 합니다. 둘 다 PASS 라면 검사기나 가짜 로그가 틀린 것이니 이유를 묻습니다.</li>
+  <li><strong>세션을 닫습니다.</strong> <code>/session-close</code> (또는 <a href="session.html#close">종료 요청 문장</a>).</li>
+  <li><strong>에이전트가 쓴 회의록을 검토합니다.</strong> 「프롬프트 기록」 의 행 수가 내가 입력한 프롬프트 수와 같은지, 원문이 그대로인지, 시각이 실측값인지 봅니다. 빠진 것이 있으면 고치고 커밋합니다.</li>
+  <li><strong>GitHub 에서 확인합니다.</strong> 회의록 · handoff · ai-usage 커밋이 올라왔는지 봅니다.</li>
+</ol>
+<div class="note"><p><span class="tag">다음</span>여기까지 하면 이 과목의 형상관리를 한 바퀴 경험한 것입니다. 그다음은 <a href="topics.html#stages">6. 주제별 가이드의 공통 단계</a> 1 번 (센서 하나 읽기) 으로 실제 프로젝트를 시작합니다.</p></div>
+
+<div class="pager">
+  <a class="next" href="index.html"><span>다음</span><b>1. 개요 →</b></a>
+</div>
+
+<footer class="site"><p>도구 정보는 2026-10-05 기준입니다. 막히는 곳이 있으면 화면을 그대로 조교에게 보여 줍니다.</p></footer>
+
+</div></main>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>실습 환경과 측정 · 에이전트 형상관리</title>
+<meta name="description" content="Raspberry Pi 3 B+ / 4 개발 구성, 하드웨어 안전, 측정 규율과 디버깅 절차">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hahmlet:wght@500;600;700&family=IBM+Plex+Sans+KR:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/site.js" defer></script>
+</head>
+<body>
+<header class="topbar"><div class="topbar-inner">
+  <a class="brand" href="index.html"><b>ESD 2026-2</b> · 에이전트 형상관리</a>
+  <nav class="nav" aria-label="튜토리얼 페이지"><ol>
+    <li><a href="start.html"><span class="n">0</span>빠른 시작</a></li>
+    <li><a href="index.html"><span class="n">1</span>개요</a></li>
+    <li><a href="setup.html"><span class="n">2</span>시작하기</a></li>
+    <li><a href="rules.html"><span class="n">3</span>규칙 파일</a></li>
+    <li><a href="session.html"><span class="n">4</span>세션 운영</a></li>
+    <li><a href="lab.html" aria-current="page"><span class="n">5</span>실습 환경 · 측정</a></li>
+    <li><a href="topics.html"><span class="n">6</span>주제별 가이드</a></li>
+    <li><a href="case.html"><span class="n">7</span>사례 따라 읽기</a></li>
+    <li><a href="submit.html"><span class="n">8</span>회고 · 제출</a></li>
+    <li><a href="terms.html"><span class="n">∗</span>용어</a></li>
+  </ol></nav>
+</div></header>
+
+<main class="page"><div class="col">
+
+<header class="lead">
+  <p class="eyebrow">5 · 실습 환경 · 측정</p>
+  <h1>장치 옆에서 일하는 법</h1>
+  <p class="lede">에이전트는 노트북 안에 있고, 공과 모터는 책상 위에 있습니다. 그 사이를 잇는 것은 학생의 손과 로그 파일입니다.
+  이 페이지는 Raspberry Pi 3 B+ / 4 개발 구성, 안전, 그리고 측정과 디버깅의 절차를 다룹니다.</p>
+</header>
+
+<h2 id="topology"><span class="sec">§1</span>개발 구성</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>구성</th><th>방식</th><th>대상 보드</th><th>주의</th></tr></thead>
+  <tbody>
+    <tr><td><strong>A. 기본 (권장)</strong></td><td>노트북 Kiro IDE 에서 편집 → <code>git push</code> → Pi 에서 <code>git pull</code> 후 SSH 로 실행</td>
+      <td>3 B+ · 4 모두</td>
+      <td>에이전트가 결과를 직접 보지 못합니다 — 로그를 커밋하거나 요약을 붙여 넣습니다. Pi 에 부담이 없습니다</td></tr>
+    <tr><td>B. 선택</td><td>Pi 에 Kiro CLI 를 설치하고 SSH 로 접속해 Pi 에서 에이전트 실행</td>
+      <td>Pi 4 (4 GB 이상) 만</td>
+      <td>구동기를 잘못 실행할 위험이 커집니다 — 명령 승인 모드가 필수입니다. 대화 기록이 Pi 에만 남습니다</td></tr>
+    <tr><td>C. 비권장</td><td>노트북 Kiro IDE + 원격 SSH 확장 (Open Remote - SSH) 으로 Pi 에 접속</td>
+      <td>3 B+ 불가 · Pi 4 는 직접 시험 후</td>
+      <td>원격 서버가 메모리를 많이 씁니다. 공식 지원 문서가 없고, 연결이 끊기며 대화 기록을 잃는다는 보고가 있습니다</td></tr>
+  </tbody>
+</table></div>
+<p>구성 A 로 시작합니다. 구성 A 는 수업 기본인 <strong>32-bit Raspberry Pi OS</strong> 로 충분합니다. Pi 에서 에이전트를 직접 돌리는 구성 B · C 는 <strong>64-bit</strong> 가 필요합니다.
+OS 설치와 노트북 연결은 <a href="pi-setup.html">기초 C: Raspberry Pi 초기 설정</a>에 있습니다.</p>
+
+<h3 id="pi-setup">Pi 준비 점검</h3>
+<pre data-file="Pi 터미널 — 한 번만"><code># 사용자 그룹: GPIO · I2C · 카메라를 sudo 없이 쓰기 위해
+groups                                  # gpio i2c video 가 보이는지
+sudo usermod -aG gpio,i2c,video "$USER" # 없으면 추가 후 재로그인
+
+# 인터페이스 켜기 (I2C · 카메라 등)
+sudo raspi-config                       # Interface Options
+
+# 시각: Pi 3 B+ / 4 에는 배터리 시계가 없어 네트워크 동기화가 필요합니다
+timedatectl                             # System clock synchronized: yes
+
+# 전원: 전압 부족이면 CPU 가 느려져 제어 주기가 흔들립니다
+vcgencmd get_throttled                  # throttled=0x0 이 정상
+
+# 저장소와 파이썬 환경
+git clone &lt;내 저장소&gt; &amp;&amp; cd &lt;저장소&gt;
+python3 -m venv --system-site-packages .venv   # 카메라 등 시스템 패키지를 함께 쓰기 위해
+. .venv/bin/activate</code></pre>
+<ul>
+  <li><strong>서보 PWM</strong> — 하드웨어 PWM (<code>/boot/firmware/config.txt</code> 의 PWM overlay) 이나 PWM 드라이버 보드 (예: PCA9685) 를 권합니다. 소프트웨어 PWM 은 지터가 큽니다.
+  <code>pigpiod</code> 같은 시스템 데몬을 쓴다면 활성화는 학생이 직접 한 번만 하고 (<code>AGENTS.md</code> §3-4), 그 설정을 <code>handoff.md</code> 의 「환경 유의」 에 적어 둡니다.</li>
+  <li><strong>전원</strong> — 정격 전원 어댑터를 쓰고, 서보 · 모터 전원은 Pi 와 분리합니다 (접지는 공통). <code>vcgencmd get_throttled</code> 값을 런마다 로그 머리에 남기면 「전압 부족으로 느려진 런」 을 나중에 가려낼 수 있습니다.</li>
+</ul>
+<div class="note"><p><span class="tag">시각</span>로그의 샘플 간격 (Δt) 은 <code>time.monotonic()</code> 이나 <code>time.perf_counter()</code> 로 잽니다 — 벽시계는 네트워크 동기화 때 건너뛸 수 있습니다.
+반면 회의록과 파일 이름의 날짜 · 시각은 동기화된 벽시계 (<code>date</code>) 에서 읽습니다.</p></div>
+
+<h2 id="safety"><span class="sec">§2</span>하드웨어 안전</h2>
+<div class="danger"><p><span class="tag">STRICT</span>서보 · 모터 · 레이저를 움직이는 명령은 에이전트가 직접 실행하지 않습니다. 에이전트는 명령, 「정상이면 보일 동작」, 「즉시 전원을 끊을 기준」 을 제시하고, 학생이 장치 옆에서 실행합니다 (<code>AGENTS.md</code> §3-1).</p></div>
+<ul>
+  <li><strong>도구의 승인 모드를 켭니다.</strong> Kiro 는 Supervised 모드와 사용자 권한 설정, 다른 도구도 「명령 실행 전 묻기」 모드로 둡니다. 구성 B 에서는 특히 그렇습니다.</li>
+  <li><strong>한계는 한 파일 + 기계 stopper.</strong> 각도 · 속도 · 듀티 한계는 <code>hw/limits.py</code> 에만 둡니다. 기계 stopper 는 소프트웨어 한계보다 약간 바깥에 둡니다 — 소프트웨어 한계가 먼저 걸려야 합니다.</li>
+  <li><strong>첫 실행은 작게.</strong> 새 제어기는 낮은 이득 · 좁은 각도 한계에서 시작합니다. 바퀴 로봇은 바퀴를 띄우고, 레이저는 LED 로 먼저 시험합니다.</li>
+  <li><strong>전원 차단 스위치를 손 닿는 곳에.</strong> 「Ctrl+C 를 누르면 멈춘다」 는 안전 장치가 아닙니다 — 프로그램이 멈춰도 마지막 PWM 이 남을 수 있습니다.</li>
+  <li><strong>sudo 로 실행하지 않습니다.</strong> 환경이 바뀌어 다른 설정을 읽습니다 (<a href="case.html#day02">사례 Day 2</a>). 파괴적 명령 (삭제 · 포맷 · <code>dd</code>) 은 학생이 직접 실행합니다.</li>
+  <li><strong>배터리 · 레이저</strong> — 리튬 배터리는 사람이 지켜볼 때만 충전합니다. 레이저는 과목 안전 공지가 허용한 모듈만, 사람 쪽으로 향하지 않게 씁니다. 주제별 안전 항목은 <a href="topics.html">6. 주제별 가이드</a>에 있습니다.</li>
+</ul>
+
+<h2 id="measure"><span class="sec">§3</span>측정 규율</h2>
+<p>측정의 목적은 「좋아 보이는 숫자」 가 아니라 <strong>다른 사람이 같은 결론에 도달할 수 있는 기록</strong>입니다. 아래 순서로 합니다.</p>
+
+<h3 id="prereg">1. 실행 전에 사전등재</h3>
+<p><code>logs/experiments/TEMPLATE.md</code> 를 복사해 가설 · 비교 대상 · 맞출 조건 · 판정 기준 · 중단 기준을 <strong>실행 전에</strong> 쓰고 커밋합니다.
+결과를 본 뒤 기준을 고치지 않습니다. 계획이 틀렸으면 「사전등재 실패」 로 남기고 새로 등재합니다 — 지우지 않습니다.</p>
+
+<h3 id="scout">2. 탐색 1 회 → 확증 3 회</h3>
+<p>새 조건의 첫 측정 (n = 1) 은 「다음에 어디를 잴까」 를 정하는 근거일 뿐입니다. 결론에 인용하지 않습니다. 의미 있어 보이는 조건만 n ≥ 3 으로 다시 잽니다.
+첫 측정이 목표선에 한참 못 미치면 나머지 반복을 돌리지 않고 보고합니다 — 시간과 배터리를 아낍니다.</p>
+
+<h3 id="matched">3. 같은 입력으로 비교</h3>
+<p>두 제어기를 비교할 때 맞춰야 하는 것은 시간이 아니라 <strong>입력</strong>입니다. 손으로 미는 외란은 크기가 매번 달라 비교에 쓸 수 없습니다.
+외란은 코드로 주입합니다 — 정해진 크기 · 길이의 펄스를 제어 출력에 더하고, 시점은 seed 로 정합니다.</p>
+<pre data-file="보고 형식"><code>정합 축: 외란 seed 7, 12 회 (모두 받은 뒤 절단) · 목표 궤적 동일
+at k=12: baseline 정착시간 &lt;mean ± sd&gt; s (n=3) / 개선 &lt;mean ± sd&gt; s (n=3) · ratio &lt;x.xx&gt;</code></pre>
+
+<h3 id="realized">4. 공통 조건은 변수 하나로, 실제 값은 로그로</h3>
+<ul>
+  <li>비교 대상들에 공통인 설정 (센서 샘플률 · timing budget · 카메라 노출 · PWM 주파수) 은 <strong>설정 파일 하나</strong>에서 읽어 양쪽에 같은 값을 넣습니다. 제어기마다 따로 정하게 두지 않습니다.</li>
+  <li>런을 시작할 때 장치에서 <strong>실제로 적용된 값을 다시 읽어</strong> 로그 머리에 남깁니다 (예: 센서 드라이버의 get 함수, 카메라 프레임 메타데이터, <code>vcgencmd get_throttled</code>). 「설정했다」 와 「적용되었다」 는 다릅니다.</li>
+  <li>이 값을 검사하는 스크립트는 먼저 <strong>양성 대조</strong>로 시험합니다 — 일부러 다른 값을 넣은 로그에서 검사가 실패하는지 봅니다. 엉뚱한 키를 찾는 검사는 아무것도 못 찾고도 「✓」 를 냅니다 (<a href="case.html#day08">사례 Day 8</a>).</li>
+</ul>
+
+<h3 id="integrity">5. 분석 전에 로그 무결성</h3>
+<p>SD 카드 쓰기 지연, 버퍼 넘침, I2C 읽기 실패는 <strong>조용히</strong> 샘플을 빠뜨립니다. 분석하기 전에 검사합니다.</p>
+<pre data-file="노트북 또는 Pi"><code>$ python3 tools/check_log.py logs/2026-11-14-step-a.csv --rate 50
+PASS  logs/2026-11-14-step-a.csv: n=500 duration=9.980s expected=500 mean_rate=50.00Hz max_gap=20.0ms tick=yes
+
+$ python3 tools/check_log.py logs/2026-11-14-step-b.csv --rate 50
+VOID  logs/2026-11-14-step-b.csv: n=485 duration=9.980s expected=500 mean_rate=48.50Hz max_gap=320.0ms tick=yes
+      - sample count 485 vs expected 500 (-3.0%, limit +/-1%)
+      - largest gap 320.0 ms after row 200 (limit 30.0 ms)
+      - tick does not advance by 1 at 1 place(s), first after row 200</code></pre>
+<p>VOID 인 런은 지우지 않고 실험 기록에 「무효 (이유)」 로 남깁니다. 로그에 루프 카운터 (<code>tick</code>) 열을 두면 누락 위치를 정확히 찾습니다.
+위 출력은 starter 의 <code>check_log.py</code> 를, 15 개 샘플을 지운 시험 로그에 실제로 돌린 결과입니다.</p>
+
+<h3 id="sim">6. 시뮬레이터 실험의 복제</h3>
+<p>시뮬레이터는 결정적입니다 — 같은 설정을 세 번 돌리면 세 번 같은 값이 나옵니다. 그 sd = 0 은 확증이 아닙니다.</p>
+<ul>
+  <li>복제는 <strong>결과를 바꾸어서는 안 되는 것</strong>을 바꿔서 합니다: 센서 잡음 seed, 초기 위치, 외란 시점.</li>
+  <li>그 복제 방법이 차이를 감지할 수 있는지 <strong>대조 실행</strong>으로 보입니다 — 잡음을 크게 키우면 결과가 실제로 흔들리는지 봅니다. 대조 없이는 「결과가 안정적이다」 와 「복제 방법이 무감각하다」 를 구별할 수 없습니다.</li>
+  <li>서로 다른 설정이 <strong>완전히 같은</strong> 결과를 내면, 그 설정이 플랜트에 닿지 않은 것입니다 — 예: 필터 차단주파수가 정수 창 크기로 반올림되어 바뀌지 않음 (<a href="case.html#day07">사례 Day 7</a>).</li>
+  <li>보고서의 대표 수치는 <strong>공칭 조건</strong> (기본 seed · 기본 초기 위치) 의 값이고, 복제 결과는 그 옆에 범위로 붙입니다.</li>
+</ul>
+
+<h3 id="claims">7. 결론은 측정으로</h3>
+<p>「코드를 보니 X 때문인 것 같다」 는 가설입니다. X 를 제거한 실험으로 차이가 사라지는 것을 본 뒤에 결론으로 씁니다. 측정하지 않은 방향 주장 (「잡음은 항상 나쁘게 작용한다」) 은 규칙에도 보고서에도 넣지 않습니다.</p>
+
+<h2 id="debug"><span class="sec">§4</span>디버깅 절차</h2>
+<ol>
+  <li><strong>첫 이상 1 건에서 멈춥니다.</strong> 더 돌려서 통계를 모으지 않습니다. 이상이 여러 번 났다면 가장 이른 것 하나를 고릅니다.</li>
+  <li><strong>그 1 건의 시간순 경과를 재구성합니다.</strong> 직전 몇 초의 센서값 · 명령 · 상태를 로그에서 한 줄씩 봅니다. 회의록에 「⚠ 사고 —」 로 적습니다.</li>
+  <li><strong>가설이 하나가 될 때까지 고치지 않습니다.</strong> 후보가 둘이면 둘을 가르는 계측을 추가합니다. 임시 계측은 원인 확정 후 별도 커밋으로 지웁니다.</li>
+  <li><strong>원인을 고칩니다, 증상이 아니라.</strong> 한계 검사가 틀린 값을 읽었다면 한계를 넓히는 것이 아니라 변환 경로를 고칩니다. 표준적인 해법 (교과서 · 라이브러리의 동등 패턴) 을 먼저 찾습니다.</li>
+  <li><strong>같은 재현에서 다시 일어나지 않음을 확인합니다.</strong> 그다음에 다음 이상으로 넘어갑니다.</li>
+</ol>
+<div class="note"><p><span class="tag">시험</span>시험이 PASS 를 말하려면 피시험 코드가 실제로 돌았어야 합니다. smoke 시험의 맨 앞에 전제 검사를 둡니다 —
+설정 파일이 로드되었는지, 제어 루프 tick 이 0 보다 큰지, 구동 명령이 변했는지, 외란을 넣으면 FAIL 이 나는지. 하나라도 아니면 <code>exit 1</code> 로 즉시 끝냅니다 (<a href="case.html#day02">사례 Day 2</a>).</p></div>
+
+<h2 id="timing"><span class="sec">§5</span>제어 주기는 재는 것입니다</h2>
+<p>Linux 위의 Python 루프는 정확히 50 Hz 로 돌지 않습니다. 다른 프로세스, 가비지 컬렉션, I/O 가 주기를 흔들고, Pi 3 B+ 는 처리 여유가 작아 더 크게 흔들립니다.</p>
+<ul>
+  <li>매 반복의 시각을 <code>time.perf_counter()</code> 로 남기고, 보고서에는 평균 주기와 <strong>최대 Δt</strong> 를 적습니다.</li>
+  <li>로그 쓰기 (특히 SD 카드) 는 제어 루프 밖에서 합니다 — 큐에 넣고 다른 스레드가 씁니다.</li>
+  <li>카메라를 쓰면 해상도를 낮추고 (예: 320×240) 프레임당 처리 시간을 측정합니다. 처리 시간이 제어 주기를 넘으면 주기를 낮춥니다.</li>
+  <li>주기가 지표에 영향을 주는 실험은 주기 분포도 결과의 일부로 보고합니다.</li>
+</ul>
+
+<div class="pager">
+  <a href="session.html"><span>이전</span><b>← 4. 세션 운영</b></a>
+  <a class="next" href="topics.html"><span>다음</span><b>6. 주제별 가이드 →</b></a>
+</div>
+
+<footer class="site"><p>측정 규율의 조항 번호는 <a href="https://github.com/yongsoojoo/esd2026-starter/blob/main/AGENTS.md">starter 의 AGENTS.md</a> §4 · §5 를 따릅니다.</p></footer>
+
+</div></main>
+</body>
+</html>

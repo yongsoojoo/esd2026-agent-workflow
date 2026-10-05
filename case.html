@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>사례 따라 읽기 · 에이전트 형상관리</title>
+<meta name="description" content="1 축 ball-on-beam 재구성 사례 저장소를 Day 순서로 읽으며 규칙 · handoff · 프롬프트가 바뀌는 과정 보기">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hahmlet:wght@500;600;700&family=IBM+Plex+Sans+KR:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/site.js" defer></script>
+</head>
+<body>
+<header class="topbar"><div class="topbar-inner">
+  <a class="brand" href="index.html"><b>ESD 2026-2</b> · 에이전트 형상관리</a>
+  <nav class="nav" aria-label="튜토리얼 페이지"><ol>
+    <li><a href="start.html"><span class="n">0</span>빠른 시작</a></li>
+    <li><a href="index.html"><span class="n">1</span>개요</a></li>
+    <li><a href="setup.html"><span class="n">2</span>시작하기</a></li>
+    <li><a href="rules.html"><span class="n">3</span>규칙 파일</a></li>
+    <li><a href="session.html"><span class="n">4</span>세션 운영</a></li>
+    <li><a href="lab.html"><span class="n">5</span>실습 환경 · 측정</a></li>
+    <li><a href="topics.html"><span class="n">6</span>주제별 가이드</a></li>
+    <li><a href="case.html" aria-current="page"><span class="n">7</span>사례 따라 읽기</a></li>
+    <li><a href="submit.html"><span class="n">8</span>회고 · 제출</a></li>
+    <li><a href="terms.html"><span class="n">∗</span>용어</a></li>
+  </ol></nav>
+</div></header>
+
+<main class="page"><div class="col">
+
+<header class="lead">
+  <p class="eyebrow">7 · 사례 따라 읽기</p>
+  <h1>한 학생의 25 일을 커밋으로 다시 읽기</h1>
+  <p class="lede">사례 저장소 <a href="https://github.com/yongsoojoo/esd2026-example-beam">esd2026-example-beam</a> 은 학생 한 명이 1 축 ball-on-beam 을 에이전트와 25 일 동안 진행한 과정을
+  git 이력으로 따라갈 수 있게 만든 것입니다. 코드보다 <strong>과정</strong>을 보는 저장소입니다 — 규칙이 사고에서 자라고, handoff 가 불어났다가 정리되고, 학생의 프롬프트가 바뀌어 갑니다.</p>
+</header>
+
+<div class="warn"><p><span class="tag">재구성</span>이 저장소는 지도교수 연구실의 실제 연구 프로젝트에서 에이전트와 일한 <strong>흐름</strong>을 임베디드 예제로 옮겨 다시 꾸민 교육용 사례입니다.
+사건 · 대화 · 프롬프트 · 인물 · 시각은 재구성이며 실제 기록이 아닙니다. 회의록과 보고서의 <strong>수치는 저장소의 시뮬레이터로 실제로 잰 값</strong>이고 다시 계산할 수 있습니다.
+실물 장치에 관한 수치는 「예시값 (실측 아님)」 으로 표시되어 있습니다. 튜닝된 실물 이득은 싣지 않았습니다 — 이득은 각자의 장치에서 정해야 합니다.</p></div>
+
+<h2 id="how"><span class="sec">§1</span>읽는 방법</h2>
+<pre data-file="노트북 터미널"><code>git clone https://github.com/yongsoojoo/esd2026-example-beam.git
+cd esd2026-example-beam
+git log --reverse --format='%s'          # Day 순서로 이야기가 다시 재생됩니다
+git log --grep '\[Day 07\]' --stat       # 한 Day 의 커밋만
+git log -p --follow AGENTS.md            # 규칙 파일이 자라는 과정
+git log -p --follow handoff.md           # handoff 가 불어났다가 정리되는 과정</code></pre>
+<ul>
+  <li>회의록은 <code>docs/meeting-notes/dayNN-HHMM-주제.md</code> 입니다. 저장소 폴더를 <a href="setup.html#viewer">Obsidian</a> 으로 열면 회의록 · 실험 기록 · handoff 를 링크로 오가며 볼 수 있습니다.</li>
+  <li>각 회의록의 <strong>「프롬프트 기록」</strong> 표부터 읽어 보기를 권합니다. 학생이 무엇을 묻고 어떻게 승인했는지가 그 세션의 흐름을 가장 잘 보여 줍니다.</li>
+  <li>커밋 시각은 이 저장소를 만든 실제 시각입니다. 이야기 속 날짜는 Day 번호와 회의록의 <code>[HH:MM]</code> 입니다.</li>
+</ul>
+
+<h2 id="map"><span class="sec">§2</span>Day 지도</h2>
+<p>튜토리얼의 「사례 Day N」 링크는 이 표의 행을 가리킵니다. 회의록 이름을 누르면 GitHub 에서 열립니다.</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>Day</th><th>무슨 일이 있었나</th><th>남은 교훈</th><th>규칙</th></tr></thead>
+  <tbody>
+    <tr id="day01"><td>1</td><td><a href="https://github.com/yongsoojoo/esd2026-example-beam/blob/main/docs/meeting-notes/day01-1400-kickoff.md">착수</a> — 과목 템플릿을 축약 이식, 첫 폐루프, AI trailer 를 쓰지 않기로 결정</td><td>규칙 파일은 템플릿에서 시작해 자랍니다</td><td>r0</td></tr>
+    <tr id="day02"><td>2</td><td><a href="https://github.com/yongsoojoo/esd2026-example-beam/blob/main/docs/meeting-notes/day02-1530-smoke-vacuous-pass.md">공허한 PASS</a> — <code>sudo</code> 가 <code>HOME</code> 을 바꿔 기본 설정 (이득 0) 이 로드됨. 그런데도 smoke 시험 7 개가 PASS</td><td>시험의 전제 (설정 로드 · tick · 명령 변화 · 외란 시 FAIL) 를 먼저 검사합니다</td><td>r1</td></tr>
+    <tr id="day03"><td>3</td><td><a href="https://github.com/yongsoojoo/esd2026-example-beam/blob/main/docs/meeting-notes/day03-1610-end-stop-collision.md">빔 끝 충돌</a> — 안전 검사만 다른 근사식을 써서 공이 stopper 에 닿음 (잡음 seed 10 개 중 3 개). 감사 중 보정표 조회의 별도 결함도 발견</td><td>변환은 한 곳에 두고, 경로 감사와 전 범위 스윕을 함께 합니다</td><td>r2</td></tr>
+    <tr id="day04"><td>4</td><td><a href="https://github.com/yongsoojoo/esd2026-example-beam/blob/main/docs/meeting-notes/day04-1430-sim-pivot.md">시뮬레이터로 전환</a> — 실물 대조를 탐색 앞에 둠. 에이전트가 승인 없이 재측정한 것을 기존 규칙 위반으로 기록</td><td>진단은 원인에서 멈춥니다. 규칙이 있어도 위반은 일어납니다</td><td>—</td></tr>
+    <tr id="day05"><td>5</td><td><a href="https://github.com/yongsoojoo/esd2026-example-beam/blob/main/docs/meeting-notes/day05-1500-anchor-room-map.md">여지 지도</a> — 표준 시험에서 기본 PID 가 이미 잘함. 개선 여지가 있는 포화 구간을 찾음. feed-forward 는 overshoot 를 키워 기각</td><td>비교 조건을 고르기 전에 baseline 이 이미 잘하는 곳인지 봅니다</td><td>—</td></tr>
+    <tr id="day07"><td>7</td><td><a href="https://github.com/yongsoojoo/esd2026-example-beam/blob/main/docs/meeting-notes/day07-1400-filter-sweep-replication.md">똑같은 숫자</a> — 필터 설정을 바꿔도 결과가 동일 (정수 창). 같은 설정 n = 3 은 sd = 0. 규칙에 넣은 방향 주장을 같은 날 철회</td><td>결정적 시뮬레이터의 복제는 seed · 초기 조건을 바꾸고 대조 실행을 함께 합니다</td><td>r3 · r4</td></tr>
+    <tr id="day08"><td>8</td><td><a href="https://github.com/yongsoojoo/esd2026-example-beam/blob/main/docs/meeting-notes/day08-1530-arm-asymmetry.md">조건 비대칭</a> — 두 비교 대상의 센서 설정이 달라 결론이 부풀려짐 (정착시간 비 0.541 → 0.789). 검사 스크립트가 아무것도 못 찾고 ✓. 회의록 검토에서 추정 시각 발견</td><td>공통 조건은 변수 하나로, 실제 값은 로그로, 검사는 양성 대조로</td><td>r5</td></tr>
+    <tr id="day09"><td>9</td><td><a href="https://github.com/yongsoojoo/esd2026-example-beam/blob/main/docs/meeting-notes/day09-1600-matched-disturbance.md">「각 60 초」</a> — 같은 시간 비교에서 받은 외란 수가 달라 (14 vs 17) 결론의 방향이 뒤집힘</td><td>같은 시간이 아니라 같은 입력으로 비교합니다</td><td>—</td></tr>
+    <tr id="day10"><td>10</td><td><a href="https://github.com/yongsoojoo/esd2026-example-beam/blob/main/docs/meeting-notes/day10-1500-log-gap.md">로그 결손</a> — SD 카드 쓰기 결손이 overshoot 정점에 걸려 정착시간을 1.35 → 0.82 s 로 오판</td><td>분석 전에 로그 무결성 (샘플 수 · 간격 · tick) 을 봅니다</td><td>r6</td></tr>
+    <tr id="day12"><td>12</td><td><a href="https://github.com/yongsoojoo/esd2026-example-beam/blob/main/docs/meeting-notes/day12-1430-field-level-regression.md">해시 비교</a> — 새 필드 하나 때문에 회귀 참조 8 개 중 6 개가 「다름」. 필드 단위로 보니 8/8 일치</td><td>비교는 필드 단위로, 참조는 다시 만들지 않습니다</td><td>r7</td></tr>
+    <tr id="day15"><td>15</td><td><a href="https://github.com/yongsoojoo/esd2026-example-beam/blob/main/docs/meeting-notes/day15-1400-report-skeleton.md">보고서 골격</a> — 작성 가이드를 따로 만듦. 회의록 검토에서 빠진 짧은 프롬프트 2 개를 발견</td><td>에이전트가 쓴 회의록은 학생이 검토합니다</td><td>—</td></tr>
+    <tr id="day17"><td>17</td><td><a href="https://github.com/yongsoojoo/esd2026-example-beam/blob/main/docs/meeting-notes/day17-1500-cross-review.md">두 기기의 이력</a> — 전날 Pi 에서 한 커밋 2 개 중 1 개를 노트북의 handoff 가 빠뜨림. 데이터시트 「없음」 을 원본에서 바로잡음</td><td>시작할 때 git 이력을 handoff 와 따로 보고, 「없다」 는 원본 + 양성 대조로</td><td>r8</td></tr>
+    <tr id="day22"><td>22</td><td><a href="https://github.com/yongsoojoo/esd2026-example-beam/blob/main/docs/meeting-notes/day22-1300-correction-round.md">정정 라운드</a> — 정정이 새 오류를 만듦, 표시를 지우다 문장이 사라짐, 추정 시각, 결정자 없는 「동결」, 요약으로 사라진 프롬프트</td><td>정정은 다른 경로로 검증하고, 결정에는 결정자를 붙입니다</td><td>r9</td></tr>
+    <tr id="day25"><td>25</td><td><a href="https://github.com/yongsoojoo/esd2026-example-beam/blob/main/docs/meeting-notes/day25-1500-retrospective.md">회고</a> — 규칙 개정의 계기 분류, 반복된 실패 유형, 프롬프트 분석</td><td>프롬프트를 남겨야 과정을 분석할 수 있습니다</td><td>—</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="scenes"><span class="sec">§3</span>꼭 볼 장면 다섯</h2>
+<p>각 장면은 학생의 프롬프트 하나가 방향을 바꾼 지점입니다. 인용은 해당 회의록의 「프롬프트 기록」 원문입니다.</p>
+
+<h3>Day 2 — 지도교수의 질문을 그대로 전한 프롬프트</h3>
+<div class="prompt"><p>교수님한테 결과 메일로 보냈더니 답장 왔는데, FAIL 3개는 원인 찾으면 되지만 PASS 7개는 믿어도 되냐고, 그때 공을 손으로 툭 밀었으면 그 항목들이 FAIL로 바뀌었겠냐고 물어보심</p></div>
+<p>바로 앞의 프롬프트는 「FAIL 난 거 고쳐줘」 와 「응」 이었습니다. 이 질문 하나가 시험의 전제를 검사하는 규칙 (r1) 을 낳았습니다. 같은 회의록에서 「그냥 sudo가 낫지 않아?」 라는 학생의 질문이 sudo 대신 사용자 그룹을 쓰는 쪽으로 이어진 것도 봅니다.</p>
+
+<h3>Day 7 — 「숫자가 똑같음」</h3>
+<p>필터 설정을 바꿔 가며 돌렸는데 결과가 완전히 같았습니다. 학생의 질문이 「그 설정이 실제로 반영되었나」 를 따지게 했고, 같은 날 에이전트가 규칙에 넣은 방향 주장도 학생의 아래 질문으로 철회되었습니다 (r4). 회의록의 논의 흐름 ① · ③ 을 봅니다.</p>
+<div class="prompt"><p>방금 규칙에 '잡음은 항상 정착시간을 늘린다'고 썼던데, 그 '항상'은 측정한 거야?</p></div>
+
+<h3>Day 9 — 비교 방식을 바꾼 질문</h3>
+<p>「각 60 초」 로 돌린 비교에서 두 제어기가 받은 외란 수가 14 와 17 로 달랐고, 맞춰 보니 결론의 방향이 뒤집혔습니다. 지도교수가 면담에서 던진 질문을 학생이 전했고, 이어서 학생이 재계획의 조건을 직접 지정했습니다 (논의 흐름 ① · ②).</p>
+
+<h3>Day 17 — 「git log 봐봐」</h3>
+<div class="prompt"><p>잠깐, 어제 저녁에 Pi에서 커밋 두 개 올렸던 것 같은데. handoff엔 링키지 로그 하나만 있네? git log 봐봐</p></div>
+<p>에이전트는 결과가 달라진 이유를 「seed 처리 차이」 로 짐작했고, 학생은 그 근거를 물은 뒤 이력을 직접 보게 했습니다. 원인은 Pi 에서 바꾼 서보 한계였습니다. 같은 날 「PDF 원본 열어봤냐」 는 지도교수의 질문이 데이터시트 「없음」 판정을 바로잡았습니다.</p>
+
+<h3>Day 22 — 「누가 정했나」</h3>
+<div class="prompt"><p>handoff에 보고서 동결이라고 썼던데 누가 정한 거야? 마감 Day 24잖아</p></div>
+<p>제출 직후 에이전트가 handoff 에 「보고서 동결」 을 사실처럼 적었고, 학생의 이 질문으로 그것이 에이전트의 가정이었음이 드러났습니다. 같은 날 에이전트가 지어낸 시각으로 남은 시간을 잘못 계산한 일, 정정이 새 오류를 만든 일, 대화 요약으로 프롬프트가 사라진 일이 함께 기록되어 있습니다 (r9).</p>
+
+<h2 id="prompts"><span class="sec">§4</span>프롬프트가 바뀌는 모습</h2>
+<p>Day 25 회고의 「프롬프트 분석」 은 <code>tools/prompt_stats.py</code> 로 모든 회의록의 프롬프트 표를 센 결과에서 시작합니다. 아래는 그 스크립트의 실제 출력입니다.</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>구간</th><th class="num">프롬프트</th><th class="num">짧은 승인 비율</th><th class="num">질문 수</th><th class="num">계획 · 근거 · 왜 · 확인 · 조건 언급</th><th class="num">평균 길이 (자)</th></tr></thead>
+  <tbody>
+    <tr><td>전반 (Day 1–8)</td><td class="num">92</td><td class="num">14 %</td><td class="num">19</td><td class="num">16</td><td class="num">20.5</td></tr>
+    <tr><td>후반 (Day 9–25)</td><td class="num">90</td><td class="num">9 %</td><td class="num">19</td><td class="num">19</td><td class="num">27.5</td></tr>
+  </tbody>
+</table></div>
+<p>수치보다 중요한 것은 회고가 고른 <strong>사례</strong>입니다. 「ㅇㅇ 진행」 같은 승인이 어떤 사고 직전에 있었는지, 어떤 질문이 방향을 바꿨는지를 회의록 경로와 함께 짚고, 다음 프로젝트에서 바꿀 점을 행동으로 적습니다.
+「짧은 승인」 의 판정은 스크립트의 승인 문구 목록에 기대므로 한계가 있다는 점도 회고에 적혀 있습니다. 자기 프로젝트의 회고 방법은 <a href="submit.html#retro">8. 회고 · 제출 §2</a> 에 있습니다.</p>
+
+<h2 id="kept"><span class="sec">§5</span>일부러 남긴 것</h2>
+<ul>
+  <li><strong>기존 규칙의 위반</strong> (Day 4 · 9) — 규칙이 있어도 위반은 일어나며, 위반도 회의록에 기록합니다.</li>
+  <li><strong>검토에서 잡은 회의록의 결함</strong> (Day 8 추정 시각, Day 15 빠진 프롬프트, Day 22 요약으로 사라진 프롬프트) — 에이전트가 쓴 회의록을 학생이 검토해야 하는 이유입니다.</li>
+  <li><strong>실패한 사전등재</strong> — <code>logs/experiments/</code> 에 지우지 않고 「사전등재 실패」 로 남아 있습니다.</li>
+  <li><strong>규칙 개정의 세 가지 계기</strong> — <code>AGENTS.md</code> §9 와 회고에서 사고 · 지시 · 기록 갱신으로 나눠 볼 수 있습니다.</li>
+</ul>
+
+<h2 id="reproduce"><span class="sec">§6</span>수치 다시 계산하기</h2>
+<pre data-file="사례 저장소 폴더에서"><code>python3 sim/reproduce.py --all       # 모든 Day 의 수치 재계산 (끝난 뒤 git status 가 깨끗하면 재현된 것)
+python3 sim/reproduce.py --day 07    # 한 Day 만
+python3 tools/prompt_stats.py        # 프롬프트 통계
+python3 -m unittest discover -s tests -t .</code></pre>
+<p class="small">Python 3 표준 라이브러리만 씁니다. 시뮬레이터의 플랜트 값은 이 사례를 위한 가정값이며 실물 장치의 값이 아닙니다.</p>
+
+<div class="pager">
+  <a href="topics.html"><span>이전</span><b>← 6. 주제별 가이드</b></a>
+  <a class="next" href="submit.html"><span>다음</span><b>8. 회고 · 제출 →</b></a>
+</div>
+
+<footer class="site"><p>사례 저장소의 README 첫머리에 재구성 고지가 있습니다. 사례의 규칙 파일은 starter v1.1 과 같은 계보입니다.</p></footer>
+
+</div></main>
+</body>
+</html>

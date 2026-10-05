@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>시작하기 · 에이전트 형상관리</title>
+<meta name="description" content="템플릿으로 저장소 만들기, Kiro for Students 등록, 도구별 설정, 규칙 적재 확인, Obsidian 회의록 뷰어">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hahmlet:wght@500;600;700&family=IBM+Plex+Sans+KR:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/site.js" defer></script>
+</head>
+<body>
+<header class="topbar"><div class="topbar-inner">
+  <a class="brand" href="index.html"><b>ESD 2026-2</b> · 에이전트 형상관리</a>
+  <nav class="nav" aria-label="튜토리얼 페이지"><ol>
+    <li><a href="start.html"><span class="n">0</span>빠른 시작</a></li>
+    <li><a href="index.html"><span class="n">1</span>개요</a></li>
+    <li><a href="setup.html" aria-current="page"><span class="n">2</span>시작하기</a></li>
+    <li><a href="rules.html"><span class="n">3</span>규칙 파일</a></li>
+    <li><a href="session.html"><span class="n">4</span>세션 운영</a></li>
+    <li><a href="lab.html"><span class="n">5</span>실습 환경 · 측정</a></li>
+    <li><a href="topics.html"><span class="n">6</span>주제별 가이드</a></li>
+    <li><a href="case.html"><span class="n">7</span>사례 따라 읽기</a></li>
+    <li><a href="submit.html"><span class="n">8</span>회고 · 제출</a></li>
+    <li><a href="terms.html"><span class="n">∗</span>용어</a></li>
+  </ol></nav>
+</div></header>
+
+<main class="page"><div class="col">
+
+<header class="lead">
+  <p class="eyebrow">2 · 시작하기</p>
+  <h1>저장소를 만들고 에이전트가 규칙을 읽게 하기</h1>
+  <p class="lede">자기 저장소를 템플릿으로 만들고, 쓰는 도구가 <code>AGENTS.md</code> 를 읽는지 확인하고, 회의록을 편하게 볼 뷰어를 준비하는 데까지가 이 페이지의 범위입니다.
+  도구 정보는 2026-10-05 에 각 도구의 공식 문서로 확인했습니다.</p>
+</header>
+
+<h2 id="repo"><span class="sec">§1</span>템플릿으로 저장소 만들기</h2>
+<p class="small">clone · commit · push 가 처음이면 <a href="git.html">기초 A: git · GitHub</a> 를 먼저 읽습니다.</p>
+<ol>
+  <li><a href="https://github.com/yongsoojoo/esd2026-starter">esd2026-starter</a> 에서 <strong>Use this template → Create a new repository</strong> 를 누릅니다. 공개 범위와 지도교수 · 조교 초대는 강의 공지를 따릅니다.</li>
+  <li>노트북에 clone 하고, Raspberry Pi 에도 같은 저장소를 clone 합니다.</li>
+  <li><code>AGENTS.md</code> §0 「프로젝트 개요」 를 채우고, <code>topics/</code> 에서 자기 주제 파일 하나를 골라 그 내용을 §8 에 붙여 넣습니다.</li>
+  <li><code>rules: fill in project overview and topic rules</code> 로 커밋하고 push 합니다. 이것이 규칙 r0 입니다.</li>
+</ol>
+<pre data-file="starter 의 구성"><code>AGENTS.md                    규칙 원본 — 모든 에이전트가 읽습니다
+handoff.md                   다음 세션의 단일 진입점 — 세션 끝마다 덮어씁니다
+CLAUDE.md                    Claude Code 용: "@AGENTS.md" 한 줄
+.gemini/settings.json        Gemini CLI 용: AGENTS.md 를 읽게 하는 설정
+.github/copilot-instructions.md   JetBrains 등의 Copilot Chat 용 안내
+.kiro/steering/hw-edit.md    Kiro 용 보조 규칙 (구동 코드를 다룰 때만 적재)
+.kiro/steering/session-close.md   Kiro 용 세션 종료 명령 (/session-close)
+.claude/commands/session-close.md Claude Code 용 세션 종료 명령 (/session-close)
+topics/                      주제별 규칙 3 종
+docs/meeting-notes/          회의록 (TEMPLATE.md)
+docs/ai-usage.md             AI 사용 기록 (필수)
+docs/writing-guide.md        보고서 작성 가이드
+logs/experiments/            실험 기록 (TEMPLATE.md)
+hw/limits.py                 구동기 한계 상수 — 이 값들은 이 파일에만 둡니다
+tools/check_log.py           로그 무결성 검사</code></pre>
+
+<h2 id="kiro"><span class="sec">§2</span>Kiro 준비</h2>
+
+<h3 id="kiro-students">학생 등록 — Kiro for Students</h3>
+<p>국민대학교는 <a href="https://kiro.dev/students/">Kiro for Students</a> 대상 학교입니다. 인증하면 <strong>매월 1,000 credits 를 12 개월</strong> 동안 받습니다.</p>
+<ol>
+  <li>Google · GitHub · AWS Builder ID 중 하나로 Kiro 에 가입합니다. 이때 계정에 <strong>학교 이메일 (<code>@kookmin.ac.kr</code>)</strong> 이 연결되어 있어야 합니다. 「Your organization」 로그인은 학생 프로그램에서 쓰지 않습니다.</li>
+  <li>계정 사용량 화면에 「You are eligible for Kiro Students」 배너가 뜨면 눌러 SheerID 인증을 합니다 (이름 · 생년월일 · 학교. 경우에 따라 학생증이나 재학증명서를 올립니다).</li>
+  <li>인증이 끝나면 신용카드 없이 혜택이 시작됩니다.</li>
+</ol>
+<div class="warn"><p><span class="tag">유의</span>만 18 세 이상만 대상입니다. 혜택 기간에는 추가 크레딧을 살 수 없고, 남은 크레딧은 다음 달로 넘어가지 않습니다. 12 개월이 지나면 Free 등급이 됩니다.
+약관상 학생 계정은 <strong>Free Tier 사용자</strong>로 간주되어, 기본 설정에서는 대화 내용이 서비스 개선에 쓰일 수 있습니다.
+원하지 않으면 설정 → User → Application → <strong>Telemetry and Content</strong> 에서 끕니다.</p></div>
+
+<h3 id="kiro-trust">처음 열 때 — Trust</h3>
+<p>Kiro IDE 로 저장소를 처음 열면 워크스페이스를 신뢰할지 묻습니다. <strong>Trust 를 눌러야 steering 파일이 적재됩니다.</strong> 누르지 않으면 규칙 일부가 적재되지 않은 채로 일하게 됩니다.</p>
+
+<h3 id="kiro-files">Kiro 가 읽는 파일</h3>
+<ul>
+  <li><strong><code>AGENTS.md</code></strong> — 저장소 루트의 파일을 설정 없이 <strong>항상</strong> 읽습니다. 그래서 Kiro 용으로 따로 복사할 필요가 없습니다.</li>
+  <li><strong><code>.kiro/steering/*.md</code></strong> — Kiro 전용 보조 규칙입니다. 파일 첫 줄의 front matter 로 언제 적재할지 정합니다.
+  <code>AGENTS.md</code> 의 내용을 여기에 되풀이하지 않습니다. 다른 도구는 이 폴더를 읽지 않으므로, <strong>모든 도구가 지켜야 할 규칙은 <code>AGENTS.md</code> 에 둡니다.</strong></li>
+</ul>
+<pre data-file=".kiro/steering/hw-edit.md (starter 에 들어 있는 예)"><code>---
+inclusion: fileMatch
+fileMatchPattern: ["hw/**", "**/*motor*", "**/*servo*", "**/*laser*"]
+---
+
+# 구동 코드를 다룰 때의 확인 목록
+...</code></pre>
+<div class="table-wrap"><table>
+  <thead><tr><th>inclusion</th><th>언제 적재되나</th><th>쓰임</th></tr></thead>
+  <tbody>
+    <tr><td><code>always</code> (기본값)</td><td>모든 상호작용</td><td>Kiro 에만 필요한 상시 지시</td></tr>
+    <tr><td><code>fileMatch</code> + <code>fileMatchPattern</code></td><td>패턴에 맞는 파일을 다룰 때</td><td>구동 코드 · 실험 로그를 다룰 때의 확인 목록</td></tr>
+    <tr><td><code>manual</code></td><td>채팅에서 <code>/파일명</code> 또는 <code>#파일명</code> 으로 부를 때</td><td>세션 종료 명령 <code>/session-close</code></td></tr>
+    <tr><td><code>auto</code> + <code>name</code> · <code>description</code></td><td>요청이 설명과 맞을 때</td><td>문서끼리 설명이 엇갈립니다 — 쓰기 전에 직접 확인합니다</td></tr>
+  </tbody>
+</table></div>
+<p>steering 파일 안에서 <code>#[[file:docs/frames.md]]</code> 처럼 다른 파일을 참조할 수 있습니다. <code>AGENTS.md</code> 를 steering 폴더에 심볼릭 링크로 걸지 않습니다 (링크를 따라가지 않는 문제가 보고되어 있습니다).
+Kiro 가 제안하는 <code>product.md</code> · <code>tech.md</code> · <code>structure.md</code> 자동 생성은 <code>AGENTS.md</code> §0 과 내용이 겹치므로, 생성했다면 둘 중 하나만 남깁니다.</p>
+
+<h3 id="kiro-modes">Supervised 모드와 권한</h3>
+<p>Kiro 의 기본값은 <strong>Autopilot</strong> (에이전트가 스스로 파일을 고치며 진행) 입니다. 구동기 코드를 다루는 동안에는 <strong>Supervised</strong> 로 바꿉니다 — 파일을 고칠 때마다 멈추고 변경 단위로 승인받습니다.
+명령 실행 권한은 사용자 설정 (<code>~/.kiro/settings/permissions.yaml</code>) 에서 정합니다. 이 파일은 저장소 밖에 있으므로 각자 설정합니다:
+<code>sudo</code> 와 구동 스크립트 실행은 묻도록 (또는 거부하도록) 둡니다. 형식은 <a href="https://kiro.dev/docs/permissions">Kiro 권한 문서</a>를 따릅니다.</p>
+
+<h3 id="kiro-specs">Specs — 계획 먼저를 Kiro 방식으로</h3>
+<p>Kiro 의 Specs 는 <code>.kiro/specs/&lt;이름&gt;/</code> 아래에 <code>requirements.md</code> → <code>design.md</code> → <code>tasks.md</code> 를 만들고 <strong>단계마다 승인</strong>을 받습니다.
+이 튜토리얼의 「계획 보고 → 승인」 과 같은 구조입니다. 센서 드라이버, 제어기 구조처럼 며칠에 걸친 기능은 spec 으로 진행하면 계획이 파일로 남습니다.
+요구사항은 EARS 형식으로 씁니다.</p>
+<pre data-file=".kiro/specs/stall-guard/requirements.md 의 한 줄 (예)"><code>WHEN the servo command stays at a limit for more than STALL_TIMEOUT_S
+THE SYSTEM SHALL return the servo output to neutral and log a stall event</code></pre>
+<div class="note"><p><span class="tag">참고</span>Plan mode (Shift+Tab) 의 계획은 대화에만 남고 파일로 저장되지 않습니다. 계획을 남기려면 spec 을 쓰거나, 승인된 계획을 회의록에 옮깁니다.</p></div>
+
+<h3 id="kiro-hooks">Hooks (선택)</h3>
+<p>Hook 은 에이전트의 특정 시점 (세션 시작 · 종료, 파일 저장, 도구 실행 전후 등) 에 명령을 자동 실행합니다. Kiro IDE 1.0 부터 형식이 <code>.kiro/hooks/&lt;이름&gt;.json</code> 으로 바뀌었습니다.
+<strong>파일 저장 trigger 는 에이전트가 바꾼 파일에만 반응합니다</strong> — 사람이 편집기에서 고친 것에는 반응하지 않습니다.</p>
+<pre data-file=".kiro/hooks/session-close.json (예 — 자기 환경에서 동작을 확인한 뒤 씁니다)"><code>{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "session-close-check",
+      "description": "Before stopping, run the close-out checks from AGENTS.md section 1-3",
+      "trigger": "Stop",
+      "action": {
+        "type": "agent",
+        "prompt": "Before you stop: report whether the meeting note (with every prompt of this session, verbatim) is written, handoff.md is overwritten, docs/ai-usage.md has a new line, and everything is pushed. Fix anything missing first."
+      }
+    }
+  ]
+}</code></pre>
+<p class="small">필드 구성은 <a href="https://kiro.dev/docs/hooks">Kiro hooks 문서</a>를 따랐습니다. Hook 은 편의 기능입니다 — 규칙은 hook 이 없어도 지켜져야 합니다.</p>
+
+<h3 id="kiro-cli">Kiro CLI (Raspberry Pi 4 에서 쓰려면)</h3>
+<p>기본 구성에서는 Pi 에 에이전트를 설치하지 않습니다 (<a href="lab.html#topology">5. 실습 환경 §1</a>). Pi 4 (메모리 4 GB 이상, <strong>64-bit OS</strong>) 에서 직접 쓰고 싶을 때만 설치합니다. Pi 3 B+ 는 메모리가 1 GB 라 권하지 않습니다.</p>
+<pre data-file="Pi 4 터미널"><code>curl -fsSL https://cli.kiro.dev/install | bash
+kiro-cli login        # 브라우저가 없으면 URL 과 일회용 코드를 노트북 브라우저에서 입력
+kiro-cli              # 대화 시작. /context show 로 적재된 규칙 파일 확인</code></pre>
+<ul>
+  <li>수업 기본 OS 는 32-bit 이므로 Kiro CLI 를 쓰려면 64-bit OS 를 따로 설치합니다 (<a href="pi-setup.html#os">기초 C §1</a>). Pi 4 에서 <code>illegal instruction</code> 으로 멈춘다는 보고가 있으며, 그때는 설치 문서의 musl 빌드 (<code>kirocli-aarch64-linux-musl.zip</code>) 로 다시 설치합니다.</li>
+  <li>CLI 의 화면 모드에서는 <code>sudo</code> 처럼 입력을 기다리는 명령을 쓸 수 없습니다. GPIO · I2C · 카메라는 사용자 그룹 권한으로 해결합니다 (<a href="lab.html#pi-setup">5. 실습 환경</a>).</li>
+  <li>CLI 의 새 엔진 (V3) 은 아직 선택 사항 (<code>--v3</code>) 입니다. 기존 엔진은 <code>fileMatch</code> · <code>manual</code> steering 을 자동으로 적재하지 않습니다 — 그래서 꼭 필요한 규칙은 <code>AGENTS.md</code> 에 둡니다.</li>
+  <li>CLI 의 대화 기록은 Pi 안에 저장되어 노트북의 Kiro 와 공유되지 않습니다. 두 곳을 잇는 것은 <code>handoff.md</code> 와 git 뿐입니다.</li>
+</ul>
+
+<h2 id="others"><span class="sec">§3</span>다른 도구</h2>
+<p>모든 도구가 같은 <code>AGENTS.md</code> 를 읽게 하는 것이 목표입니다. 규칙 본문을 도구별 파일에 복사하지 않습니다 — 두 곳에 있으면 언젠가 둘이 달라집니다.</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>도구</th><th>AGENTS.md</th><th>필요한 연결</th><th>적재 확인</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Kiro</strong> IDE · CLI</td><td class="ok">기본</td><td>없음 (Trust 필수)</td><td>Steering 패널, CLI <code>/context show</code></td></tr>
+    <tr><td><strong>Claude Code</strong></td><td>조건부</td><td><code>CLAUDE.md</code> 에 <code>@AGENTS.md</code> 한 줄 (starter 에 있음)</td><td><code>/memory</code></td></tr>
+    <tr><td><strong>Codex CLI</strong></td><td class="ok">기본</td><td>없음</td><td>아래 확인 질문</td></tr>
+    <tr><td><strong>Gemini CLI</strong></td><td class="no">설정 필요</td><td><code>.gemini/settings.json</code> (starter 에 있음)</td><td><code>/memory show</code></td></tr>
+    <tr><td><strong>GitHub Copilot</strong> VS Code · CLI</td><td class="ok">기본</td><td>VS Code 설정 <code>chat.useAgentsMdFile</code> 켜짐 확인</td><td>응답의 참조 목록</td></tr>
+    <tr><td><strong>Copilot</strong> JetBrains · Visual Studio</td><td class="tbd">확인 안 됨</td><td><code>.github/copilot-instructions.md</code> 가 AGENTS.md 를 가리킴</td><td>아래 확인 질문</td></tr>
+    <tr><td><strong>Cursor</strong></td><td class="ok">기본</td><td>없음</td><td>아래 확인 질문</td></tr>
+  </tbody>
+</table></div>
+<pre data-file="CLAUDE.md"><code>@AGENTS.md</code></pre>
+<pre data-file=".gemini/settings.json"><code>{
+  "context": {
+    "fileName": ["AGENTS.md", "GEMINI.md"]
+  }
+}</code></pre>
+<p class="small">Claude Code 는 v2.1.277 부터 <code>AGENTS.md</code> 를 직접 읽지만, <code>CLAUDE.md</code> 가 하나도 없을 때만 그렇습니다. 버전과 상관없이 확실히 읽히도록 <code>CLAUDE.md</code> 에 한 줄을 둡니다.
+세션 종료 명령은 Kiro 와 Claude Code 에 <code>/session-close</code> 로 들어 있고, 다른 도구에서는 <a href="session.html#close">4. 세션 운영 §4</a> 의 문장으로 요청합니다.</p>
+
+<h2 id="webchat"><span class="sec">§4</span>웹 채팅만 쓸 때</h2>
+<p>구독 없이 ChatGPT · Claude · Gemini 웹 채팅만 쓰는 경우에도 같은 파일 체계를 씁니다. 다른 점은 <strong>학생이 파일을 옮겨 준다</strong>는 것입니다.</p>
+<ol>
+  <li>새 대화를 열 때마다 <code>AGENTS.md</code> 와 <code>handoff.md</code> 의 내용을 붙여 넣고, 「이 규칙을 따르고, 다음 작업을 계획으로 보고해 줘」 라고 시작합니다.</li>
+  <li>관련 코드 파일은 필요한 것만 붙여 넣습니다. 에이전트가 저장소 전체를 볼 수 없다는 점을 기억합니다.</li>
+  <li>제안받은 변경은 직접 파일에 반영하고 실행합니다. 결과 (로그 요약 · 오류 메시지) 를 다시 붙여 넣습니다.</li>
+  <li>끝낼 때 「오늘 내용으로 회의록 초안과 새 handoff.md 를 써 줘. 프롬프트 기록에는 이번 대화의 내 프롬프트를 전부 원문 그대로 옮겨 줘」 라고 요청하고, 검토한 뒤 직접 커밋합니다.</li>
+</ol>
+
+<h2 id="verify"><span class="sec">§5</span>규칙이 적재되었는지 확인 — 양성 대조</h2>
+<p>「규칙 파일을 만들었다」 와 「에이전트가 그 파일을 읽었다」 는 다릅니다. 확인하려면 <strong>답을 이미 아는 질문</strong>을 합니다.
+이렇게 결과를 미리 아는 입력으로 검사 도구 자체를 시험하는 것을 <strong>양성 대조</strong>라고 합니다. 이 튜토리얼 전체에서 반복해 나오는 방법입니다.</p>
+<div class="prompt"><p>파일을 새로 열지 말고, 이미 받은 지시만으로 답해 줘. AGENTS.md §3 의 1 번 조항 제목은 무엇이야?</p></div>
+<ul>
+  <li>파일 읽기 없이 「구동 명령은 사람 입회 하에」 라고 답하면 적재된 것입니다.</li>
+  <li>파일을 열러 가거나, 모른다고 하거나, 그럴듯한 다른 답을 하면 적재되지 않은 것입니다 — §2 · §3 의 설정을 다시 확인합니다.</li>
+  <li>규칙을 고친 뒤에도, 도구를 업데이트한 뒤에도 한 번씩 다시 묻습니다.</li>
+</ul>
+
+<h2 id="viewer"><span class="sec">§6</span>회의록 뷰어 — Obsidian</h2>
+<p>회의록 · handoff · 실험 기록은 모두 Markdown 파일이고 서로를 링크로 가리킵니다. 편집기에서 하나씩 여는 것보다 <strong>노트 뷰어</strong>로 저장소 폴더를 열면
+링크와 백링크를 따라가며 훨씬 편하게 읽을 수 있습니다. 무료로 쓸 수 있는 <a href="https://obsidian.md">Obsidian</a> 을 권합니다.</p>
+<ol>
+  <li>Obsidian 을 설치하고 <strong>Open folder as vault</strong> 로 노트북의 저장소 폴더를 엽니다. Obsidian 이 만드는 <code>.obsidian/</code> 폴더는 starter 의 <code>.gitignore</code> 에 들어 있어 커밋되지 않습니다.</li>
+  <li>설정 → <strong>Files and links</strong> 에서 아래처럼 바꿉니다.
+    <ul>
+      <li><strong>Use [[Wikilinks]]</strong> 끄기 — 표준 Markdown 링크로 저장되어 GitHub 에서도 링크가 깨지지 않습니다</li>
+      <li><strong>New link format</strong> → Relative path to file</li>
+      <li><strong>Automatically update internal links</strong> 끄기 — 파일 이름을 바꿀 때 여러 회의록이 조용히 수정되는 것을 막습니다</li>
+      <li><strong>Detect all file extensions</strong> 켜기 — <code>.py</code> · <code>.csv</code> 도 파일 목록에 보입니다</li>
+      <li><strong>Excluded files</strong> 에 <code>.venv</code> · <code>logs/raw</code> 추가</li>
+    </ul>
+  </li>
+  <li>오른쪽 패널의 <strong>Backlinks</strong> 로 「이 실험 기록을 가리키는 회의록」 을, <strong>Graph view</strong> 로 회의록 · 실험 · 규칙의 연결을 봅니다.
+  검색창에 <code>"프롬프트 기록"</code> 을 넣으면 모든 회의록의 프롬프트 표를 모아 볼 수 있습니다 — <a href="submit.html#retro">회고</a> 때 유용합니다.</li>
+</ol>
+<div class="warn"><p><span class="tag">유의</span>에이전트가 회의록을 쓰는 동안에는 같은 파일을 Obsidian 에서 편집하지 않습니다. 검토 후 고칠 것이 있으면 세션 종료 커밋이 끝난 뒤 고치고 따로 커밋합니다.</p></div>
+<p class="small">다른 방법: Kiro · VS Code 의 Markdown 미리보기 (<code>Ctrl/Cmd + Shift + V</code>), 또는 GitHub 웹에서 저장소를 열어 보기.</p>
+
+<h2 id="pricing"><span class="sec">§7</span>요금과 학생 혜택</h2>
+<p>2026-10-05 에 각 도구의 공식 페이지에서 확인한 내용입니다. 학생 혜택은 자주 바뀌므로 신청 전에 링크에서 다시 확인합니다. 금액은 미국 달러 기준입니다.</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>도구</th><th>무료로 쓸 수 있는 것</th><th>학생 혜택</th><th>개인 유료</th></tr></thead>
+  <tbody>
+    <tr><td><a href="https://kiro.dev/students/">Kiro</a></td><td>Free: 월 50 credits</td><td><strong>Kiro for Students</strong>: 월 1,000 credits × 12 개월 (국민대 대상)</td><td>Pro $20 / 월</td></tr>
+    <tr><td><a href="https://github.com/settings/education/benefits">GitHub Copilot</a></td><td>Free 등급</td><td><strong>Copilot Student</strong> (무료): 모델 자동 선택만, 타사 에이전트 제외, 매월 자격 재확인</td><td>Pro $10 / 월</td></tr>
+    <tr><td><a href="https://github.com/google-gemini/gemini-cli">Gemini CLI</a></td><td>Google 로그인 시 하루 1,000 요청</td><td>Google AI Plus 학생 1 년 무료 (2026-12-31 까지 신청). CLI 한도는 늘지 않습니다</td><td>Google AI Pro</td></tr>
+    <tr><td><a href="https://code.claude.com/docs">Claude Code</a></td><td>없음 (무료 플랜에 미포함)</td><td>개인 학생 할인 없음</td><td>Pro $20 / 월</td></tr>
+    <tr><td><a href="https://learn.chatgpt.com/docs/pricing">Codex CLI</a></td><td>Free · Go 에서 CLI 사용 가능 여부는 확인 안 됨</td><td>한국 학생 혜택 확인 안 됨</td><td>ChatGPT Plus $20 / 월 (CLI 포함)</td></tr>
+    <tr><td><a href="https://cursor.com/students">Cursor</a></td><td>Hobby (요청 수 제한)</td><td>학생 1 년 무료 안내가 현재 페이지에 없음</td><td>Pro $20 / 월</td></tr>
+  </tbody>
+</table></div>
+<p>이 과목의 기준 도구는 Kiro 입니다. 다른 도구를 써도 되지만, 규칙 · handoff · 회의록 (프롬프트 기록 포함) · AI 사용 기록의 요구사항은 같습니다.</p>
+
+<div class="pager">
+  <a href="index.html"><span>이전</span><b>← 1. 개요</b></a>
+  <a class="next" href="rules.html"><span>다음</span><b>3. 규칙 파일 →</b></a>
+</div>
+
+<footer class="site"><p>도구 정보 기준일 2026-10-05. 다르게 동작하면 각 도구의 공식 문서를 우선합니다.</p></footer>
+
+</div></main>
+</body>
+</html>

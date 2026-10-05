@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AI 도구의 세 가지 형태 · 에이전트 형상관리</title>
+<meta name="description" content="웹 채팅 · IDE 에이전트 · CLI 에이전트의 차이, 같은 작업의 흐름 비교, 상황별 선택, 공통 개념과 흔한 함정">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hahmlet:wght@500;600;700&family=IBM+Plex+Sans+KR:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/site.js" defer></script>
+</head>
+<body>
+<header class="topbar"><div class="topbar-inner">
+  <a class="brand" href="index.html"><b>ESD 2026-2</b> · 에이전트 형상관리</a>
+  <nav class="nav" aria-label="튜토리얼 페이지"><ol>
+    <li><a href="start.html"><span class="n">0</span>빠른 시작</a></li>
+    <li><a href="index.html"><span class="n">1</span>개요</a></li>
+    <li><a href="setup.html"><span class="n">2</span>시작하기</a></li>
+    <li><a href="rules.html"><span class="n">3</span>규칙 파일</a></li>
+    <li><a href="session.html"><span class="n">4</span>세션 운영</a></li>
+    <li><a href="lab.html"><span class="n">5</span>실습 환경 · 측정</a></li>
+    <li><a href="topics.html"><span class="n">6</span>주제별 가이드</a></li>
+    <li><a href="case.html"><span class="n">7</span>사례 따라 읽기</a></li>
+    <li><a href="submit.html"><span class="n">8</span>회고 · 제출</a></li>
+    <li><a href="terms.html"><span class="n">∗</span>용어</a></li>
+  </ol></nav>
+</div></header>
+
+<main class="page"><div class="col">
+
+<header class="lead">
+  <p class="eyebrow">기초 B · AI 도구의 형태</p>
+  <h1>웹 채팅, IDE 에이전트, CLI 에이전트</h1>
+  <p class="lede">같은 AI 모델이라도 어떤 형태로 쓰느냐에 따라 할 수 있는 일이 다릅니다. 핵심 차이는 <strong>AI 가 무엇을 볼 수 있고, 무엇을 직접 할 수 있느냐</strong>입니다.
+  이 차이를 알면 어느 도구를 언제 쓸지, 무엇을 조심할지가 정해집니다.</p>
+</header>
+
+<h2 id="three"><span class="sec">§1</span>세 가지 형태</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th></th><th>웹 채팅</th><th>IDE 에이전트</th><th>CLI 에이전트</th></tr></thead>
+  <tbody>
+    <tr><td><strong>예</strong></td><td>ChatGPT · Claude · Gemini 웹사이트</td><td>Kiro IDE · Cursor · VS Code 의 Copilot agent mode</td><td>Kiro CLI · Claude Code · Codex CLI · Gemini CLI · Copilot CLI</td></tr>
+    <tr><td><strong>어디서</strong></td><td>브라우저</td><td>코드 편집기 안의 채팅 창</td><td>터미널 (SSH 로 접속한 원격 기기 포함)</td></tr>
+    <tr><td><strong>AI 가 보는 것</strong></td><td>내가 붙여 넣은 글뿐</td><td>저장소의 파일 · 규칙 파일 · 편집기에서 연 파일</td><td>그 폴더의 파일 · 규칙 파일 · 명령 실행 결과</td></tr>
+    <tr><td><strong>파일 수정</strong></td><td>사람이 복사해 붙임</td><td>에이전트가 직접 고치고, 사람이 변경 (diff) 을 봅니다</td><td>에이전트가 직접 고칩니다</td></tr>
+    <tr><td><strong>명령 실행</strong></td><td>사람이 실행하고 결과를 붙여 넣음</td><td>편집기의 터미널에서 에이전트가 실행 (승인 설정에 따라)</td><td>에이전트가 실행 (승인 설정에 따라)</td></tr>
+    <tr><td><strong>규칙 파일</strong></td><td>매번 붙여 넣어야 함</td><td>자동으로 읽음 (<code>AGENTS.md</code>)</td><td>자동으로 읽음 (<code>AGENTS.md</code>)</td></tr>
+    <tr><td><strong>대화 기록</strong></td><td>웹 서비스 계정에</td><td>그 기기의 편집기에</td><td>그 기기의 홈 폴더에</td></tr>
+    <tr><td><strong>처음 쓰기</strong></td><td>가장 쉬움</td><td>쉬움 — <strong>처음이라면 여기서 시작합니다</strong></td><td>터미널에 익숙해야 함</td></tr>
+  </tbody>
+</table></div>
+<p>세 형태 모두 이 과목의 기록 요구사항 (규칙 · handoff · 회의록의 프롬프트 기록 · AI 사용 기록) 은 같습니다. 다른 것은 <strong>그 기록을 누가 옮기느냐</strong>입니다 — 웹 채팅에서는 학생이, 에이전트에서는 에이전트가 옮기고 학생이 검토합니다.</p>
+
+<h2 id="same-task"><span class="sec">§2</span>같은 일을 세 가지로 — 「ToF 센서 값을 읽어 CSV 로 남기는 코드」</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>단계</th><th>웹 채팅</th><th>IDE 에이전트 (Kiro IDE)</th><th>CLI 에이전트 (Pi 4 에서 Kiro CLI)</th></tr></thead>
+  <tbody>
+    <tr><td>시작</td><td><code>AGENTS.md</code> · <code>handoff.md</code> 를 붙여 넣고 계획을 요청</td><td>세션을 열고 계획을 요청 (규칙은 자동 적재)</td><td>Pi 에 SSH 로 접속해 <code>kiro-cli</code> 실행 후 계획을 요청</td></tr>
+    <tr><td>코드 작성</td><td>답변의 코드를 복사해 파일로 저장</td><td>에이전트가 <code>src/sensing/tof.py</code> 를 만들고, 학생이 diff 를 보고 승인</td><td>에이전트가 Pi 에서 바로 파일을 만듦</td></tr>
+    <tr><td>실행</td><td>학생이 Pi 에서 실행하고 출력을 다시 붙여 넣음</td><td>학생이 Pi 에서 실행하고 로그를 커밋 · push → 에이전트가 pull 해서 봄</td><td>에이전트가 센서 읽기를 직접 실행하고 결과를 봄 (구동기 명령은 여전히 학생이)</td></tr>
+    <tr><td>세션 종료</td><td>회의록 초안 · handoff 를 요청해 학생이 저장 · 커밋</td><td><code>/session-close</code> → 에이전트가 회의록 작성 · 커밋, 학생이 검토</td><td>CLI 에서 종료 절차를 요청 → 에이전트가 작성 · 커밋, 학생이 검토</td></tr>
+    <tr><td>잘 맞는 경우</td><td>질문 · 개념 설명 · 짧은 코드 검토</td><td>대부분의 개발 작업</td><td>장치 옆에서 센서를 반복해 읽어 보는 작업</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="choose"><span class="sec">§3</span>무엇을 고르나</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>상황</th><th>추천</th></tr></thead>
+  <tbody>
+    <tr><td>git · 터미널이 처음인 경우</td><td>Kiro IDE. 파일 변경과 git 을 화면으로 볼 수 있습니다</td></tr>
+    <tr><td>개념을 묻거나 오류 메시지의 뜻을 알고 싶은 경우</td><td>웹 채팅도 충분합니다. 답을 코드에 반영했다면 그 대화도 프롬프트 기록에 옮깁니다</td></tr>
+    <tr><td>코드를 만들고 고치는 대부분의 작업</td><td>IDE 에이전트</td></tr>
+    <tr><td>Pi 에 SSH 로 접속해 센서 · 카메라를 계속 시험하는 경우</td><td>Pi 4 라면 CLI 에이전트도 가능합니다. Pi 3 B+ 는 노트북의 IDE 에이전트 + SSH 실행</td></tr>
+    <tr><td>이미 Claude Code · Codex 등을 잘 쓰는 경우</td><td>그대로 써도 됩니다. <a href="start.html#track3">트랙 3 체크리스트</a>만 확인합니다</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="concepts"><span class="sec">§4</span>어느 형태든 같은 네 가지 개념</h2>
+<dl class="kv">
+  <dt>컨텍스트</dt><dd>AI 가 지금 한 번에 볼 수 있는 글입니다 — 규칙 파일, 연 파일, 지금까지의 대화. 컨텍스트에 없는 것은 모릅니다. 그래서 규칙 파일이 <a href="setup.html#verify">적재되었는지</a> 확인합니다.</dd>
+  <dt>승인 모드</dt><dd>에이전트가 파일을 고치거나 명령을 실행하기 전에 묻는지 정하는 설정입니다. Kiro 의 Supervised / Autopilot, Claude Code 의 권한 모드, Codex 의 승인 설정이 모두 이것입니다. 구동 코드를 다룰 때는 <strong>묻는 쪽</strong>으로 둡니다.</dd>
+  <dt>세션과 요약</dt><dd>대화가 길어지면 앞부분이 요약 (compaction) 되어 세부와 프롬프트 원문이 빠집니다. 주제가 끝나면 세션을 닫고 새로 엽니다.</dd>
+  <dt>비용 단위</dt><dd>도구마다 크레딧 · 요청 수 · 토큰으로 셉니다. 긴 대화, 큰 파일, 반복 질문이 많이 씁니다 (<a href="setup.html#pricing">2. 시작하기 §7</a>).</dd>
+</dl>
+
+<h2 id="pitfalls"><span class="sec">§5</span>형태별 흔한 함정</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>형태</th><th>함정</th><th>대응</th></tr></thead>
+  <tbody>
+    <tr><td>웹 채팅</td><td>보지 못한 파일의 내용을 그럴듯하게 지어내 답합니다</td><td>관련 파일을 실제로 붙여 넣고, 「붙여 넣지 않은 파일은 추측하지 마」 라고 말합니다</td></tr>
+    <tr><td>웹 채팅</td><td>대화가 저장소 밖에 남아 기록이 끊깁니다</td><td>세션 끝에 프롬프트를 회의록에 옮깁니다 (<a href="setup.html#webchat">2. 시작하기 §4</a>)</td></tr>
+    <tr><td>IDE 에이전트</td><td>Autopilot 으로 여러 파일을 한꺼번에 고쳐 나갑니다</td><td>계획 승인 후 착수하게 하고, 구동 코드는 Supervised 로 둡니다</td></tr>
+    <tr><td>CLI 에이전트</td><td>명령을 연달아 실행하며 결과를 요약만 보고합니다</td><td>명령 실행 전에 묻는 모드로 두고, 결과는 표로 보고받습니다 (<a href="session.html#report">4. 세션 운영 §3</a>)</td></tr>
+    <tr><td>모든 형태</td><td>틀린 것을 자신 있게 말합니다</td><td>답을 아는 질문으로 시험하고 (양성 대조), 원본을 직접 열어 봅니다</td></tr>
+  </tbody>
+</table></div>
+
+<div class="pager">
+  <a href="git.html"><span>이전 기초</span><b>← 기초 A. git · GitHub</b></a>
+  <a class="next" href="pi-setup.html"><span>다음 기초</span><b>기초 C. Raspberry Pi 초기 설정 →</b></a>
+</div>
+
+<footer class="site"><p>도구별 설정은 <a href="setup.html#others">2. 시작하기 §3</a>, 요금은 §7 에 있습니다.</p></footer>
+
+</div></main>
+</body>
+</html>

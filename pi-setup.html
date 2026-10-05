@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Raspberry Pi 초기 설정 · 에이전트 형상관리</title>
+<meta name="description" content="Raspberry Pi Imager 로 OS 설치, 노트북과 유선 SSH 연결, 인터넷 연결 공유, WiringPi 로 GPIO 확인">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hahmlet:wght@500;600;700&family=IBM+Plex+Sans+KR:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/site.js" defer></script>
+</head>
+<body>
+<header class="topbar"><div class="topbar-inner">
+  <a class="brand" href="index.html"><b>ESD 2026-2</b> · 에이전트 형상관리</a>
+  <nav class="nav" aria-label="튜토리얼 페이지"><ol>
+    <li><a href="start.html"><span class="n">0</span>빠른 시작</a></li>
+    <li><a href="index.html"><span class="n">1</span>개요</a></li>
+    <li><a href="setup.html"><span class="n">2</span>시작하기</a></li>
+    <li><a href="rules.html"><span class="n">3</span>규칙 파일</a></li>
+    <li><a href="session.html"><span class="n">4</span>세션 운영</a></li>
+    <li><a href="lab.html"><span class="n">5</span>실습 환경 · 측정</a></li>
+    <li><a href="topics.html"><span class="n">6</span>주제별 가이드</a></li>
+    <li><a href="case.html"><span class="n">7</span>사례 따라 읽기</a></li>
+    <li><a href="submit.html"><span class="n">8</span>회고 · 제출</a></li>
+    <li><a href="terms.html"><span class="n">∗</span>용어</a></li>
+  </ol></nav>
+</div></header>
+
+<main class="page"><div class="col">
+
+<header class="lead">
+  <p class="eyebrow">기초 C · Raspberry Pi 초기 설정</p>
+  <h1>SD 카드에 OS 를 쓰고, 노트북에서 SSH 로 접속하기</h1>
+  <p class="lede">처음 받은 Raspberry Pi 3 B+ / 4 를 노트북에 유선으로 연결해 SSH 로 다루는 데까지 갑니다. 이 페이지는 수업 자료 「Raspberry Pi 설정」 의 절차를 옮겨 정리한 것입니다.
+  수업 자료의 화면은 macOS 기준이며, Windows 절차는 함께 적되 수업 전에 자기 노트북에서 한 번 확인합니다.</p>
+</header>
+
+<h2 id="goals"><span class="sec">§0</span>설정 목표</h2>
+<ol>
+  <li>노트북은 Wi-Fi 로, Raspberry Pi 는 노트북의 연결 공유로 외부 인터넷에 연결됩니다.</li>
+  <li>노트북에서 Raspberry Pi 를 <strong>유선 LAN</strong> 의 SSH 로 원격 접속할 수 있습니다.</li>
+  <li>Raspberry Pi 에 WiringPi 를 설치해 <code>gpio readall</code> 이 실행됩니다.</li>
+</ol>
+<p><strong>준비물</strong>: Raspberry Pi 3 B+ 또는 4 · 정격 전원 어댑터 · microSD 카드 (16 GB 또는 32 GB) 와 USB 카드 리더 · LAN 케이블 · (노트북에 LAN 단자가 없으면) USB LAN 어댑터.</p>
+
+<h2 id="os"><span class="sec">§1</span>OS 설치 — Raspberry Pi Imager</h2>
+<ol>
+  <li><a href="https://www.raspberrypi.com/software/">Raspberry Pi Imager</a> 를 노트북에 설치합니다.</li>
+  <li>OS 이미지를 정합니다. 수업 기본은 <strong>Raspberry Pi OS (32-bit)</strong> 입니다 (<a href="https://www.raspberrypi.com/software/operating-systems/">운영체제 목록</a>). 직접 내려받은 이미지는 Imager 의 OS 선택 창 맨 아래 <strong>「사용자 정의 사용」</strong> 으로 고릅니다.</li>
+  <li>Imager 를 실행해 <strong>장치</strong>를 고릅니다 (Raspberry Pi 3 또는 4).</li>
+  <li>microSD 카드를 USB 리더로 연결하고 <strong>저장소</strong>를 고릅니다.</li>
+</ol>
+<div class="danger"><p><span class="tag">주의</span>저장소 선택에서 실수로 <strong>노트북의 내장 디스크</strong>를 고르면 노트북의 운영체제가 지워집니다. 고른 장치의 용량이 SD 카드 용량 (16 GB · 32 GB) 과 같은지 확인합니다.
+확신이 들지 않으면 쓰기 전에 손을 들고 도움을 요청합니다.</p></div>
+<ol start="5">
+  <li>「OS 커스터마이징 설정을 적용하시겠습니까?」 에서 <strong>설정을 편집하기</strong>를 누릅니다.
+    <ul>
+      <li><strong>일반</strong> 탭: 사용자 이름과 비밀번호를 정합니다. <strong>무선 LAN 은 설정하지 않습니다</strong> (강의실에서는 유선을 씁니다).</li>
+      <li><strong>서비스</strong> 탭: <strong>SSH 사용</strong>과 <strong>비밀번호 인증 사용</strong>을 체크하고 저장합니다.</li>
+    </ul>
+  </li>
+  <li>커스터마이징 적용에 「예」, 쓰기 확인 창에서 장치 이름을 한 번 더 확인하고 「예」 를 누릅니다.</li>
+  <li>쓰기가 끝나면 SD 카드를 빼서, 전원이 꺼진 Pi 뒷면의 슬롯에 넣습니다. 아직 전원을 넣지 않고 §2 의 고정 주소 설정을 먼저 합니다.</li>
+</ol>
+<div class="note"><p><span class="tag">32 / 64-bit</span>노트북에서 에이전트를 쓰고 Pi 에서는 SSH 로 실행만 하는 기본 구성 (<a href="lab.html#topology">5. 실습 환경 §1</a>) 에서는 32-bit 로 충분합니다.
+Pi 4 에서 Kiro CLI 같은 에이전트를 직접 돌리려면 64-bit OS 가 필요합니다.</p></div>
+
+<h2 id="wired"><span class="sec">§2</span>유선 연결과 고정 주소</h2>
+<p>노트북과 Pi 를 LAN 케이블로 바로 잇고, 두 기기에 정해진 주소를 줍니다. 수업 자료의 주소는 <strong>노트북 192.168.2.1 · Pi 192.168.2.2</strong> 입니다.</p>
+
+<h3>Pi 쪽 — <code>cmdline.txt</code></h3>
+<p>SD 카드를 노트북에 꽂으면 <code>bootfs</code> 라는 드라이브가 보입니다. 그 안의 <code>cmdline.txt</code> 를 열어 <strong>한 줄로 된 내용의 맨 끝</strong>에 공백 하나와 아래 내용을 덧붙입니다.</p>
+<pre data-file="cmdline.txt 맨 끝에 덧붙일 내용"><code>ip=192.168.2.2::192.168.2.1:255.255.255.0:rpi:eth0:off</code></pre>
+<div class="warn"><p><span class="tag">주의</span><code>cmdline.txt</code> 는 <strong>반드시 한 줄</strong>이어야 합니다. 줄바꿈을 넣으면 Pi 가 부팅하지 못할 수 있습니다. macOS 는 터미널에서 <code>cd /Volumes/bootfs</code> 후 <code>nano cmdline.txt</code>, Windows 는 메모장으로 엽니다.</p></div>
+<p>저장한 뒤 SD 카드를 안전하게 꺼내 Pi 에 넣고, LAN 케이블로 노트북과 연결한 다음 전원을 넣습니다. 첫 부팅은 초기화 작업 때문에 <strong>2 분 이상</strong> 기다립니다.</p>
+
+<h3>노트북 쪽 — 유선 어댑터 주소</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>환경</th><th>설정 위치</th><th>값</th></tr></thead>
+  <tbody>
+    <tr><td>macOS</td><td>시스템 설정 → 네트워크 → (USB LAN 등 유선 어댑터) → 세부사항 → TCP/IP</td><td>IPv4 구성 <strong>수동</strong> · IP 주소 192.168.2.1 · 서브넷 마스크 255.255.255.0 · 라우터 192.168.2.1</td></tr>
+    <tr><td>Windows</td><td>설정 → 네트워크 및 인터넷 → 이더넷 → IP 할당 편집 → 수동 → IPv4</td><td>IP 주소 192.168.2.1 · 서브넷 마스크 255.255.255.0 (접두사 길이 24)</td></tr>
+  </tbody>
+</table></div>
+<pre data-file="노트북 터미널 (macOS) 또는 PowerShell (Windows)"><code>ping 192.168.2.2          # 응답이 오면 유선 연결 성공 (Windows 는 4 번 보내고 끝납니다)</code></pre>
+
+<h2 id="ssh"><span class="sec">§3</span>SSH 접속</h2>
+<pre data-file="노트북 터미널 (macOS) 또는 PowerShell (Windows)"><code>ssh &lt;사용자 이름&gt;@192.168.2.2
+# 처음 접속하면 지문 (fingerprint) 확인을 묻습니다 → yes
+# §1 에서 정한 비밀번호 입력 → 프롬프트가 &lt;사용자 이름&gt;@&lt;호스트&gt;:~ $ 로 바뀌면 성공</code></pre>
+<p>Windows 10 / 11 은 SSH 클라이언트가 기본으로 들어 있어 PowerShell 에서 같은 명령을 씁니다. 접속을 끝낼 때는 <code>exit</code> 를 입력합니다.</p>
+
+<h2 id="sharing"><span class="sec">§4</span>인터넷 연결 공유 — Pi 가 노트북을 통해 인터넷에 나가기</h2>
+<p>노트북은 Wi-Fi 로 인터넷에 연결하고, 그 연결을 유선으로 Pi 에 나눠 줍니다.</p>
+<ul>
+  <li><strong>노트북 Wi-Fi</strong>: 강의실 전용 Wi-Fi 에 연결합니다 (이름과 비밀번호는 수업에서 안내합니다). 학교 공용 Wi-Fi (KMU, KMU(5G)) 는 연결 공유를 지원하지 않습니다.</li>
+  <li><strong>Pi 의 Wi-Fi 를 직접 쓰는 것</strong>은 강의실에서 권하지 않습니다.</li>
+</ul>
+
+<h3>macOS</h3>
+<ol>
+  <li>시스템 설정 → 일반 → 공유 → <strong>인터넷 공유</strong>: 「연결 공유」 를 <strong>Wi-Fi</strong>, 「다음 사용」 에서 Pi 에 연결한 <strong>유선 어댑터</strong>를 체크하고 켭니다.</li>
+  <li>켜기 전에 <strong>서비스 순서</strong>를 확인합니다: 시스템 설정 → 네트워크 → 오른쪽 아래 「…」 → 서비스 순서 설정 → <strong>외부 인터넷에 연결된 Wi-Fi 를 가장 위로</strong> 옮깁니다. 유선 어댑터가 위에 있으면 노트북의 외부 인터넷이 막힙니다.</li>
+</ol>
+
+<h3>Windows (참고 — 수업 전에 자기 노트북에서 확인합니다)</h3>
+<ol>
+  <li>제어판 → 네트워크 및 공유 센터 → 어댑터 설정 변경 → <strong>Wi-Fi</strong> 어댑터 속성 → <strong>공유</strong> 탭 → 「다른 네트워크 사용자가 이 컴퓨터의 인터넷 연결을 통해 연결할 수 있도록 허용」 을 체크하고, 홈 네트워크 연결에서 Pi 에 연결한 <strong>이더넷</strong>을 고릅니다.</li>
+  <li>Windows 는 이때 이더넷 주소를 <strong>192.168.137.1</strong> 로 바꿉니다. 그러므로 Pi 의 <code>cmdline.txt</code> 를 아래처럼 맞추고, SSH 주소도 192.168.137.2 로 씁니다.</li>
+</ol>
+<pre data-file="Windows 연결 공유를 쓸 때의 cmdline.txt 덧붙임"><code>ip=192.168.137.2::192.168.137.1:255.255.255.0:rpi:eth0:off</code></pre>
+
+<h3>확인 (Pi 에서)</h3>
+<pre data-file="Pi 터미널 (SSH)"><code>ping -c 3 8.8.8.8         # 인터넷 경로 확인
+ping -c 3 github.com      # 이름 해석 (DNS) 확인</code></pre>
+<p>첫 줄은 되는데 둘째 줄이 안 되면 이름 해석 문제입니다. 화면을 그대로 조교에게 보여 줍니다.</p>
+
+<h2 id="manual"><span class="sec">§5</span>SSH 수동 설정 (§1 의 커스터마이징을 건너뛴 경우)</h2>
+<p>Imager 에서 사용자 · SSH 설정을 하지 않았다면 SD 카드의 <code>bootfs</code> 에 직접 파일을 만듭니다.</p>
+<pre data-file="macOS · Linux 터미널"><code>cd /Volumes/bootfs                       # SD 카드의 bootfs (macOS)
+touch ssh                                # 빈 ssh 파일: SSH 켜기
+
+echo '&lt;비밀번호&gt;' | openssl passwd -6 -stdin   # 비밀번호 해시 생성 (Linux 의 openssl 에서)
+nano userconf                            # 한 줄: &lt;사용자 이름&gt;:&lt;위에서 나온 해시&gt;</code></pre>
+<p class="small">Windows 에서는 메모장으로 내용 없는 파일을 만들어 확장자 없이 <code>ssh</code> 라는 이름으로 <code>bootfs</code> 에 저장합니다. <code>userconf</code> 의 해시는 Pi 나 Linux 환경에서 만듭니다. 고정 주소 (§2 의 <code>cmdline.txt</code>) 도 함께 설정합니다.</p>
+
+<h2 id="gpio"><span class="sec">§6</span>첫 점검과 GPIO 확인 — WiringPi</h2>
+<p>아래는 학생이 직접 실행하는 시스템 설정입니다 (<code>AGENTS.md</code> §3-4 — 에이전트에게 맡기지 않습니다).</p>
+<pre data-file="Pi 터미널 (SSH)"><code>sudo apt-get update
+sudo apt-get upgrade        # 30 분 이상 걸릴 수 있습니다. 수업 시간에는 건너뛰고 집에서 합니다
+
+git clone https://github.com/WiringPi/WiringPi
+cd WiringPi/
+./build
+gpio -v                     # 버전과 Raspberry Pi Details (보드 종류 · 메모리) 가 나오면 성공
+gpio readall                # GPIO 핀 표가 나오면 GPIO 접근 확인 완료</code></pre>
+<p><code>gpio readall</code> 의 핀 표는 결과를 이미 아는 확인입니다 — 표가 나오면 보드 · 라이브러리 · 권한이 함께 맞았다는 뜻입니다. 이어서 <a href="lab.html#pi-setup">5. 실습 환경 §1 의 점검</a> (사용자 그룹 · 시각 동기화 · 전원 상태) 을 합니다.</p>
+
+<h2 id="git"><span class="sec">§7</span>Pi 에서 git 준비</h2>
+<ol>
+  <li><code>git config</code> 로 이름과 noreply 이메일을 설정합니다 (<a href="git.html#install">기초 A §3</a>).</li>
+  <li>Pi 에서 SSH 키를 만들어 GitHub 에 등록합니다 (같은 절).</li>
+  <li>자기 저장소를 clone 합니다: <code>git clone git@github.com:&lt;아이디&gt;/&lt;저장소&gt;.git</code></li>
+</ol>
+
+<div class="pager">
+  <a href="ai-tools.html"><span>이전 기초</span><b>← 기초 B. AI 도구의 형태</b></a>
+  <a class="next" href="start.html"><span>돌아가기</span><b>0. 빠른 시작 →</b></a>
+</div>
+
+<footer class="site"><p>수업 자료 「Raspberry Pi 설정」 을 옮겨 정리했습니다. 강의실 네트워크 정보는 공개 페이지에 싣지 않으며 수업에서 안내합니다.</p></footer>
+
+</div></main>
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>git · GitHub 기초 · 에이전트 형상관리</title>
+<meta name="description" content="저장소 · 커밋 · push · pull 의 개념, 설치와 첫 설정, 노트북과 Raspberry Pi 사이의 하루 흐름, 문제가 생겼을 때">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hahmlet:wght@500;600;700&family=IBM+Plex+Sans+KR:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/site.js" defer></script>
+</head>
+<body>
+<header class="topbar"><div class="topbar-inner">
+  <a class="brand" href="index.html"><b>ESD 2026-2</b> · 에이전트 형상관리</a>
+  <nav class="nav" aria-label="튜토리얼 페이지"><ol>
+    <li><a href="start.html"><span class="n">0</span>빠른 시작</a></li>
+    <li><a href="index.html"><span class="n">1</span>개요</a></li>
+    <li><a href="setup.html"><span class="n">2</span>시작하기</a></li>
+    <li><a href="rules.html"><span class="n">3</span>규칙 파일</a></li>
+    <li><a href="session.html"><span class="n">4</span>세션 운영</a></li>
+    <li><a href="lab.html"><span class="n">5</span>실습 환경 · 측정</a></li>
+    <li><a href="topics.html"><span class="n">6</span>주제별 가이드</a></li>
+    <li><a href="case.html"><span class="n">7</span>사례 따라 읽기</a></li>
+    <li><a href="submit.html"><span class="n">8</span>회고 · 제출</a></li>
+    <li><a href="terms.html"><span class="n">∗</span>용어</a></li>
+  </ol></nav>
+</div></header>
+
+<main class="page"><div class="col">
+
+<header class="lead">
+  <p class="eyebrow">기초 A · git · GitHub</p>
+  <h1>git 과 GitHub — 기록을 쌓고 기기 사이로 옮기기</h1>
+  <p class="lede">git 을 한 번도 써 보지 않았다면 이 페이지부터 읽습니다. 이 과목에서 git 은 두 가지 일을 합니다.
+  하나는 <strong>기록</strong> — 무엇을 언제 왜 바꿨는지가 남습니다. 다른 하나는 <strong>운반</strong> — 노트북에서 고친 코드를 Raspberry Pi 로, Pi 에서 잰 로그를 노트북으로 옮깁니다.</p>
+</header>
+
+<h2 id="concepts"><span class="sec">§1</span>낱말 다섯 개</h2>
+<dl class="kv">
+  <dt>저장소 (repository)</dt><dd>git 이 기록을 관리하는 폴더입니다. 폴더 안에 숨은 <code>.git</code> 폴더가 있으면 저장소입니다.</dd>
+  <dt>커밋 (commit)</dt><dd>그 순간의 파일 상태를 찍어 둔 <strong>스냅샷</strong>입니다. 누가 · 언제 · 왜 (메시지) 가 함께 남고, <code>3f9c2a1</code> 같은 고유 번호 (SHA) 가 붙습니다. 회의록이 이 번호로 커밋을 가리킵니다.</dd>
+  <dt>원격 (remote)</dt><dd>인터넷에 있는 같은 저장소입니다. 이 과목에서는 GitHub 에 있는 내 저장소입니다.</dd>
+  <dt>push</dt><dd>내 커밋을 원격으로 올립니다.</dd>
+  <dt>pull</dt><dd>원격의 새 커밋을 내 쪽으로 받아 옵니다. 처음 한 번 저장소 전체를 받아 오는 것은 <strong>clone</strong> 이라고 합니다.</dd>
+</dl>
+
+<h2 id="flow"><span class="sec">§2</span>세 장소와 네 동작</h2>
+<figure>
+  <div class="diagram">
+    <svg viewBox="0 0 720 300" width="720" role="img" aria-labelledby="git-title">
+      <title id="git-title">노트북의 작업 폴더에서 add 로 스테이징, commit 으로 로컬 저장소, push 로 GitHub, Raspberry Pi 는 pull 로 받아 오는 흐름</title>
+      <defs>
+        <marker id="g-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrowhead" d="M0,0 L10,5 L0,10 z"/></marker>
+        <marker id="g-ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrowhead accent" d="M0,0 L10,5 L0,10 z"/></marker>
+      </defs>
+      <text x="16" y="22" font-size="13" font-weight="600" class="muted">노트북</text>
+      <rect class="box" x="16" y="34" width="150" height="70" rx="6"/>
+      <text x="91" y="62" text-anchor="middle" font-size="15" font-weight="600">작업 폴더</text>
+      <text x="91" y="84" text-anchor="middle" font-size="12" class="muted">지금 고치는 파일</text>
+      <rect class="box" x="206" y="34" width="150" height="70" rx="6"/>
+      <text x="281" y="62" text-anchor="middle" font-size="15" font-weight="600">스테이징</text>
+      <text x="281" y="84" text-anchor="middle" font-size="12" class="muted">다음 커밋에 넣을 것</text>
+      <rect class="box file" x="396" y="34" width="150" height="70" rx="6"/>
+      <text x="471" y="62" text-anchor="middle" font-size="15" font-weight="600">로컬 저장소</text>
+      <text x="471" y="84" text-anchor="middle" font-size="12" class="muted">커밋이 쌓이는 곳</text>
+      <rect class="box human" x="570" y="120" width="134" height="70" rx="6"/>
+      <text x="637" y="148" text-anchor="middle" font-size="15" font-weight="600">GitHub</text>
+      <text x="637" y="170" text-anchor="middle" font-size="12" class="muted">원격 저장소</text>
+      <text x="16" y="222" font-size="13" font-weight="600" class="muted">Raspberry Pi</text>
+      <rect class="box file" x="396" y="214" width="150" height="70" rx="6"/>
+      <text x="471" y="242" text-anchor="middle" font-size="15" font-weight="600">Pi 의 저장소</text>
+      <text x="471" y="264" text-anchor="middle" font-size="12" class="muted">실행 · 로그</text>
+      <path class="edge" d="M166,69 H202" marker-end="url(#g-ah)"/>
+      <text x="184" y="60" text-anchor="middle" font-size="12" class="mono">add</text>
+      <path class="edge" d="M356,69 H392" marker-end="url(#g-ah)"/>
+      <text x="374" y="60" text-anchor="middle" font-size="12" class="mono">commit</text>
+      <path class="edge accent" d="M546,62 C600,62 637,80 637,116" marker-end="url(#g-ah2)"/>
+      <text x="600" y="54" font-size="12" class="mono">push</text>
+      <path class="edge accent" d="M637,190 C637,230 600,249 550,249" marker-end="url(#g-ah2)"/>
+      <text x="600" y="234" font-size="12" class="mono">pull</text>
+      <path class="edge" d="M471,214 V108" stroke-dasharray="4 4" marker-end="url(#g-ah)"/>
+      <text x="480" y="166" font-size="11" class="muted">(같은 방식으로 Pi 에서도 commit · push)</text>
+    </svg>
+  </div>
+  <figcaption>노트북에서 add → commit → push 로 올리고, Pi 에서 pull 로 받습니다. Pi 에서 잰 로그는 Pi 에서 commit · push 하고, 노트북에서 pull 로 받습니다.</figcaption>
+</figure>
+<ul>
+  <li><strong>add</strong> — 고친 파일 중 다음 커밋에 넣을 것을 고릅니다. 고른 것만 커밋됩니다.</li>
+  <li><strong>commit</strong> — 고른 변경을 메시지와 함께 스냅샷으로 남깁니다. 아직 내 컴퓨터 안에만 있습니다.</li>
+  <li><strong>push</strong> — 커밋을 GitHub 로 올립니다. 이제 다른 기기에서 받을 수 있습니다.</li>
+  <li><strong>pull</strong> — 다른 기기가 올린 커밋을 받아 옵니다. <strong>일을 시작할 때 항상 먼저</strong> 합니다.</li>
+</ul>
+
+<h2 id="install"><span class="sec">§3</span>설치와 첫 설정</h2>
+
+<h3>Git 설치</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>환경</th><th>방법</th><th>확인</th></tr></thead>
+  <tbody>
+    <tr><td>Windows</td><td><a href="https://git-scm.com/download/win">git-scm.com</a> 에서 Git for Windows 를 설치합니다 (기본 선택 그대로)</td><td>PowerShell 에서 <code>git --version</code></td></tr>
+    <tr><td>macOS</td><td>터미널에서 <code>git --version</code> 을 입력하면 설치 안내가 뜹니다 (Command Line Tools)</td><td><code>git --version</code></td></tr>
+    <tr><td>Raspberry Pi OS</td><td>보통 이미 들어 있습니다. 없으면 <code>sudo apt install git</code></td><td><code>git --version</code></td></tr>
+  </tbody>
+</table></div>
+
+<h3>GitHub 계정과 이메일 공개 범위</h3>
+<ol>
+  <li><a href="https://github.com/signup">github.com</a> 에서 계정을 만들고, Settings → Emails 에 학교 이메일을 추가합니다. 학생 인증을 하면 Copilot Student 도 받을 수 있습니다 (<a href="setup.html#pricing">2. 시작하기 §7</a>).</li>
+  <li>같은 화면에서 <strong>Keep my email addresses private</strong> 를 켭니다. 그러면 <code>숫자+아이디@users.noreply.github.com</code> 형태의 대신 쓸 주소가 보입니다.</li>
+  <li>커밋에 남는 이름과 이메일을 설정합니다. 이메일은 위의 noreply 주소를 씁니다 — 커밋의 이메일은 저장소를 공개하면 누구나 볼 수 있습니다.</li>
+</ol>
+<pre data-file="노트북과 Pi 에서 각각 한 번"><code>git config --global user.name  "홍길동"
+git config --global user.email "12345678+gildong@users.noreply.github.com"
+git config --global init.defaultBranch main</code></pre>
+
+<h3>GitHub 로그인 (인증)</h3>
+<ul>
+  <li><strong>노트북</strong> — Kiro (또는 VS Code) 에서 처음 push 할 때 「Sign in with GitHub」 창이 뜨면 브라우저로 로그인합니다. 터미널을 쓴다면 <a href="https://cli.github.com">GitHub CLI</a> 를 설치하고 <code>gh auth login</code> 을 한 번 실행합니다.</li>
+  <li><strong>Raspberry Pi</strong> — 화면 없이 SSH 로 쓰므로 SSH 키를 씁니다. Pi 에서 키를 만들고, 공개키를 GitHub 의 Settings → SSH and GPG keys 에 붙여 넣습니다.</li>
+</ul>
+<pre data-file="Pi 터미널"><code>ssh-keygen -t ed25519 -C "pi"     # 엔터 세 번 (비밀번호 없이도 됩니다)
+cat ~/.ssh/id_ed25519.pub          # 출력된 한 줄을 GitHub 에 등록
+ssh -T git@github.com              # "Hi 아이디!" 가 나오면 성공</code></pre>
+
+<h2 id="first"><span class="sec">§4</span>첫 저장소와 첫 커밋</h2>
+<ol>
+  <li>GitHub 에서 <a href="https://github.com/yongsoojoo/esd2026-starter">esd2026-starter</a> → <strong>Use this template</strong> → 이름을 정하고 저장소를 만듭니다.</li>
+  <li>노트북: Kiro 의 시작 화면에서 <strong>Clone repository</strong> 를 고르고 저장소 주소를 붙여 넣습니다 (터미널이라면 <code>git clone &lt;주소&gt;</code>).</li>
+  <li><code>AGENTS.md</code> §0 의 「결정자」 줄에 자기 이름을 씁니다.</li>
+  <li>Source Control 패널 (왼쪽 막대의 갈래 모양 아이콘) 에서 바뀐 파일 옆 <strong>+</strong> (add) → 메시지 입력 → <strong>Commit</strong> → <strong>Sync / Push</strong>.</li>
+  <li>GitHub 웹에서 저장소를 새로 고쳐 커밋이 올라왔는지 확인합니다.</li>
+</ol>
+<pre data-file="같은 일을 터미널로"><code>git status                     # 무엇이 바뀌었나
+git add AGENTS.md              # 다음 커밋에 넣기
+git commit -m "rules: fill in the decider line"
+git push                       # GitHub 로 올리기
+git log --oneline -3           # 최근 커밋 3 개 보기</code></pre>
+
+<h2 id="daily"><span class="sec">§5</span>이 과목의 하루 흐름</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>어디서</th><th>순서</th></tr></thead>
+  <tbody>
+    <tr><td>노트북</td><td><code>git pull</code> → 에이전트와 코드 수정 → commit → <code>git push</code></td></tr>
+    <tr><td>Pi (SSH)</td><td><code>git pull</code> → 실행 · 측정 → <code>git add logs/</code> → commit → <code>git push</code></td></tr>
+    <tr><td>노트북</td><td><code>git pull</code> → 로그 분석 → 세션 종료 (<code>/session-close</code> 가 회의록 · handoff 를 commit · push)</td></tr>
+  </tbody>
+</table></div>
+<p><strong>기기를 옮기기 전에 반드시 push 합니다.</strong> 한쪽에서 push 하지 않은 커밋은 다른 쪽에서 보이지 않고, 그 상태로 같은 파일을 양쪽에서 고치면 충돌이 납니다.</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>명령</th><th>언제</th></tr></thead>
+  <tbody>
+    <tr><td><code>git clone &lt;주소&gt;</code></td><td>처음 한 번, 저장소를 내려받을 때</td></tr>
+    <tr><td><code>git pull</code></td><td>일을 시작할 때마다</td></tr>
+    <tr><td><code>git status</code></td><td>무엇이 바뀌었는지 볼 때 (가장 자주 씁니다)</td></tr>
+    <tr><td><code>git diff</code></td><td>바뀐 내용을 줄 단위로 볼 때 — 커밋 전에 봅니다</td></tr>
+    <tr><td><code>git add &lt;파일&gt;</code></td><td>다음 커밋에 넣을 파일을 고를 때</td></tr>
+    <tr><td><code>git commit -m "..."</code></td><td>고른 변경을 기록할 때</td></tr>
+    <tr><td><code>git push</code></td><td>기록을 GitHub 로 올릴 때 — 기기를 옮기기 전에 반드시</td></tr>
+    <tr><td><code>git log --oneline</code></td><td>지난 커밋 목록을 볼 때 — 세션 시작 때 handoff 와 대조합니다</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="agent"><span class="sec">§6</span>에이전트에게 git 을 맡길 때</h2>
+<ul>
+  <li>에이전트는 commit · push 를 대신할 수 있습니다. 세션 종료 절차도 에이전트가 커밋합니다. 다만 <strong>무엇이 커밋되는지</strong>는 학생이 봅니다 — 「커밋하기 전에 git diff 요약을 보여 줘」 라고 요청합니다.</li>
+  <li><code>.env</code>, 비밀번호, 큰 영상 파일이 커밋되지 않는지 봅니다. starter 의 <code>.gitignore</code> 가 대부분을 막지만, 새 종류의 파일은 직접 확인합니다.</li>
+  <li>커밋 메시지는 <a href="session.html#commits">4. 세션 운영 §7</a> 의 형식을 따릅니다.</li>
+  <li>에이전트가 <code>--force</code> 가 들어간 명령 (<code>git push --force</code>, <code>git reset --hard</code>) 을 제안하면 실행하지 않고 이유를 묻습니다. 기록이 지워질 수 있습니다.</li>
+</ul>
+
+<h2 id="trouble"><span class="sec">§7</span>문제가 생겼을 때</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>증상</th><th>뜻</th><th>대응</th></tr></thead>
+  <tbody>
+    <tr><td>push 가 <code>rejected</code> (fetch first)</td><td>다른 기기가 먼저 올린 커밋이 있습니다</td><td><code>git pull</code> 을 먼저 하고 다시 push 합니다</td></tr>
+    <tr><td><code>CONFLICT</code> · 파일에 <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code> 표시</td><td>같은 줄을 양쪽에서 고쳤습니다</td><td>표시된 부분을 직접 정리하거나, 에이전트에게 「충돌 상황을 설명하고 해결 계획을 보고해 줘」 라고 요청합니다. 정리 후 add · commit</td></tr>
+    <tr><td>고친 파일을 원래대로 되돌리고 싶은 경우</td><td>아직 커밋하지 않은 변경입니다</td><td><code>git restore &lt;파일&gt;</code> — 그 파일의 변경이 사라지므로 먼저 <code>git diff</code> 로 확인합니다</td></tr>
+    <tr><td>비밀번호를 실수로 커밋한 경우</td><td>push 했다면 이미 노출된 것으로 봅니다</td><td><strong>비밀번호부터 바꿉니다.</strong> 이력에서 지우는 것은 그다음 문제이며, 지도교수 · 조교와 상의합니다</td></tr>
+    <tr><td>무슨 상황인지 모르는 경우</td><td>—</td><td>멈추고 <code>git status</code> 출력을 그대로 에이전트나 조교에게 보여 줍니다. 모르는 채로 명령을 더 치지 않습니다</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="history"><span class="sec">§8</span>계보 — SCCS · RCS · CVS · SVN · git</h2>
+<p>git 은 버전 관리 도구의 세 번째 세대입니다. 앞 세대의 한계가 다음 세대를 낳았습니다.</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>세대</th><th>대표 도구 (처음 나온 해)</th><th>방식</th><th>한계</th></tr></thead>
+  <tbody>
+    <tr><td>로컬 · 파일 단위</td><td>SCCS (1972) · RCS (1982)</td><td>파일 하나하나의 이력을 한 컴퓨터 안에 둡니다</td><td>여러 사람 · 여러 기기가 함께 쓰기 어렵습니다</td></tr>
+    <tr><td>중앙 집중</td><td>CVS (1986) · Subversion (SVN, 2000)</td><td>서버 하나가 이력을 갖고, 각자 서버에서 받아 고친 뒤 서버에 커밋합니다. SVN 은 CVS 를 대체하려고 만들어져, 여러 파일의 변경을 한 번에 기록하는 등 CVS 의 약점을 고쳤습니다</td><td>서버에 연결되지 않으면 커밋할 수 없고, 서버가 멈추면 모두 멈춥니다</td></tr>
+    <tr><td>분산</td><td>Git (2005) · Mercurial (2005)</td><td>clone 하나하나가 <strong>전체 이력</strong>을 갖습니다. 오프라인에서도 커밋하고, 나중에 push 로 합칩니다</td><td>— 이 과목의 노트북과 Pi 가 각자 전체 이력을 갖는 것이 이 방식입니다</td></tr>
+  </tbody>
+</table></div>
+<p>GitHub (2008) 은 버전 관리 도구가 아니라 git 저장소를 웹에서 공유하고 협업하게 해 주는 <strong>호스팅 서비스</strong>입니다. git 은 GitHub 없이도 쓸 수 있습니다.</p>
+<p class="small">더 읽을거리: <a href="https://git-scm.com/book/ko/v2/%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-%EB%B2%84%EC%A0%84-%EA%B4%80%EB%A6%AC%EB%9E%80%3F">Pro Git — 버전 관리란?</a> (한국어) ·
+<a href="https://git-scm.com/book/ko/v2/%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-%EC%A7%A7%EA%B2%8C-%EB%B3%B4%EB%8A%94-Git%EC%9D%98-%EC%97%AD%EC%82%AC">Pro Git — 짧게 보는 Git 의 역사</a> (한국어) ·
+<a href="https://en.wikipedia.org/wiki/Concurrent_Versions_System">CVS</a> · <a href="https://subversion.apache.org/">Apache Subversion</a></p>
+
+<div class="pager">
+  <a href="start.html"><span>돌아가기</span><b>← 0. 빠른 시작</b></a>
+  <a class="next" href="ai-tools.html"><span>다음 기초</span><b>기초 B. AI 도구의 세 가지 형태 →</b></a>
+</div>
+
+<footer class="site"><p>명령 대신 화면으로 하고 싶다면 Kiro · VS Code 의 Source Control 패널이나 <a href="https://desktop.github.com">GitHub Desktop</a> 을 씁니다. 원리는 같습니다.</p></footer>
+
+</div></main>
+</body>
+</html>
