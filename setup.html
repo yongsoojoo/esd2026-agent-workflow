@@ -48,7 +48,7 @@
 <pre data-file="starter 의 구성"><code>AGENTS.md                    규칙 원본 — 모든 에이전트가 읽습니다
 handoff.md                   다음 세션의 단일 진입점 — 세션 끝마다 덮어씁니다
 CLAUDE.md                    Claude Code 용: "@AGENTS.md" 한 줄
-.gemini/settings.json        Gemini CLI 용: AGENTS.md 를 읽게 하는 설정
+.gemini/settings.json        Gemini CLI (API 키 사용자) 용: AGENTS.md 를 읽게 하는 설정
 .github/copilot-instructions.md   JetBrains 등의 Copilot Chat 용 안내
 .kiro/steering/hw-edit.md    Kiro 용 보조 규칙 (구동 코드를 다룰 때만 적재)
 .kiro/steering/session-close.md   Kiro 용 세션 종료 명령 (/session-close)
@@ -154,7 +154,8 @@ kiro-cli              # 대화 시작. /context show 로 적재된 규칙 파일
     <tr><td><strong>Kiro</strong> IDE · CLI</td><td class="ok">기본</td><td>없음 (Trust 필수)</td><td>Steering 패널, CLI <code>/context show</code></td></tr>
     <tr><td><strong>Claude Code</strong></td><td>조건부</td><td><code>CLAUDE.md</code> 에 <code>@AGENTS.md</code> 한 줄 (starter 에 있음)</td><td><code>/memory</code></td></tr>
     <tr><td><strong>Codex CLI</strong></td><td class="ok">기본</td><td>없음</td><td>아래 확인 질문</td></tr>
-    <tr><td><strong>Gemini CLI</strong></td><td class="no">설정 필요</td><td><code>.gemini/settings.json</code> (starter 에 있음)</td><td><code>/memory show</code></td></tr>
+    <tr><td><strong>Gemini CLI</strong></td><td class="no">설정 필요</td><td><code>.gemini/settings.json</code> (starter 에 있음). <strong>2026-06-18 부터 개인 계정 (무료 · AI Pro · Ultra) 요청을 받지 않습니다</strong> — API 키 인증만 동작합니다</td><td><code>/memory show</code></td></tr>
+    <tr><td><strong>Antigravity</strong> (IDE · CLI)</td><td class="tbd">확인 안 됨</td><td>Google 이 Gemini CLI 의 후속으로 안내하는 도구입니다. AGENTS.md 를 읽는다는 제3자 자료가 있으나 공식 문서로 확인하지 못했습니다</td><td>아래 확인 질문</td></tr>
     <tr><td><strong>GitHub Copilot</strong> VS Code · CLI</td><td class="ok">기본</td><td>VS Code 설정 <code>chat.useAgentsMdFile</code> 켜짐 확인</td><td>응답의 참조 목록</td></tr>
     <tr><td><strong>Copilot</strong> JetBrains · Visual Studio</td><td class="tbd">확인 안 됨</td><td><code>.github/copilot-instructions.md</code> 가 AGENTS.md 를 가리킴</td><td>아래 확인 질문</td></tr>
     <tr><td><strong>Cursor</strong></td><td class="ok">기본</td><td>없음</td><td>아래 확인 질문</td></tr>
@@ -215,7 +216,7 @@ kiro-cli              # 대화 시작. /context show 로 적재된 규칙 파일
   <tbody>
     <tr><td><a href="https://kiro.dev/students/">Kiro</a></td><td>Free: 월 50 credits</td><td><strong>Kiro for Students</strong>: 월 1,000 credits × 12 개월 (국민대 대상)</td><td>Pro $20 / 월</td></tr>
     <tr><td><a href="https://github.com/settings/education/benefits">GitHub Copilot</a></td><td>Free 등급</td><td><strong>Copilot Student</strong> (무료): 모델 자동 선택만, 타사 에이전트 제외, 매월 자격 재확인</td><td>Pro $10 / 월</td></tr>
-    <tr><td><a href="https://github.com/google-gemini/gemini-cli">Gemini CLI</a></td><td>Google 로그인 시 하루 1,000 요청</td><td>Google AI Plus 학생 1 년 무료 (2026-12-31 까지 신청). CLI 한도는 늘지 않습니다</td><td>Google AI Pro</td></tr>
+    <tr><td><a href="https://github.com/google-gemini/gemini-cli/discussions/28017">Gemini CLI</a></td><td><strong>개인 계정은 2026-06-18 부터 사용 불가</strong> (API 키 인증만 동작)</td><td>Google AI Plus 학생 1 년 무료 (2026-12-31 까지 신청) 는 웹의 Gemini 용입니다</td><td>— (후속: Antigravity)</td></tr>
     <tr><td><a href="https://code.claude.com/docs">Claude Code</a></td><td>없음 (무료 플랜에 미포함)</td><td>개인 학생 할인 없음</td><td>Pro $20 / 월</td></tr>
     <tr><td><a href="https://learn.chatgpt.com/docs/pricing">Codex CLI</a></td><td>Free · Go 에서 CLI 사용 가능 여부는 확인 안 됨</td><td>한국 학생 혜택 확인 안 됨</td><td>ChatGPT Plus $20 / 월 (CLI 포함)</td></tr>
     <tr><td><a href="https://cursor.com/students">Cursor</a></td><td>Hobby (요청 수 제한)</td><td>학생 1 년 무료 안내가 현재 페이지에 없음</td><td>Pro $20 / 월</td></tr>
